@@ -1,3 +1,10 @@
+/*
+# Author: https://github.com/electronicsleep
+# Date: 07/03/2017
+# Purpose: Check systems load/top
+# Released under the BSD license
+*/
+
 package main
 
 import (
@@ -13,10 +20,9 @@ import (
 func main() {
 
     // CPU threshold
-    threshold := 0
+    threshold := 2
     // Number of top lines to capture
     top_lines := 25
-
 
     fmt.Println("OS:",runtime.GOOS)
 
@@ -46,23 +52,21 @@ func main() {
         //load10 := items_len-2
         load5 := items_len-3
         fmt.Println("Threshold", threshold)
-        fmt.Println("s[load5]", s[load5])
+        //fmt.Println("s[load5]", s[load5])
         s_load5 := strings.Split(s[load5], ".")
         int_load5, err := strconv.Atoi(s_load5[0])
         if err != nil {
-        fmt.Println("OK")
+            fmt.Println("Conversion issue")
         }
-        fmt.Println(int_load5, ">", threshold)
         if int_load5 > threshold {
-            fmt.Println("Over threshold5")
+            fmt.Println("Over threshold load5")
 
-            //if runtime.GOOS == " darwin" {
-            // Mac
-            top_out, top_err := exec.Command("top", "-l1").Output()
-            //top_out, top_err := exec.Command("ps").Output()
-            //} else {
+            //if runtime.GOOS == "linux" {
             // Linux
             //top_out, top_err := exec.Command("top -b -n 1").Output()
+            //} else {
+            // Mac
+            top_out, top_err := exec.Command("top", "-l1").Output()
             //}
 
             if top_err != nil {
