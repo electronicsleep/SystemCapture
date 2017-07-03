@@ -1,0 +1,90 @@
+package main
+
+import (
+    "fmt"
+    "log"
+    "os"
+    "os/exec"
+    "strconv"
+    "strings"
+    "runtime"
+)
+
+func main() {
+
+    // CPU threshold
+    threshold := 0
+    // Number of top lines to capture
+    top_lines := 25
+
+
+    fmt.Println("OS:",runtime.GOOS)
+
+    f, err := os.OpenFile("system-checker.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+    if err != nil {
+        fmt.Println("Error opening file: %v", err)
+    }
+    defer f.Close()
+
+    log.SetOutput(f)
+    log.Println("Starting system-checker")
+
+    fmt.Println("Checking System: Load")
+    out, err := exec.Command("w").Output()
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("w: %s\n", out)
+    s := string(out[:])
+    lines := strings.Split(s, "\n")
+    for _, line := range(lines) {
+        fmt.Println("LINE:", line)
+        log.Println(line)
+        s := strings.Split(line, " ")
+        items_len := len(s)
+        //load15 := items_len-1
+        //load10 := items_len-2
+        load5 := items_len-3
+        fmt.Println("Threshold", threshold)
+        fmt.Println("s[load5]", s[load5])
+        s_load5 := strings.Split(s[load5], ".")
+        int_load5, err := strconv.Atoi(s_load5[0])
+        if err != nil {
+        fmt.Println("OK")
+        }
+        fmt.Println(int_load5, ">", threshold)
+        if int_load5 > threshold {
+            fmt.Println("Over threshold5")
+
+            //if runtime.GOOS == " darwin" {
+            // Mac
+            top_out, top_err := exec.Command("top", "-l1").Output()
+            //top_out, top_err := exec.Command("ps").Output()
+            //} else {
+            // Linux
+            //top_out, top_err := exec.Command("top -b -n 1").Output()
+            //}
+
+            if top_err != nil {
+                fmt.Println("ERROR:")
+                //log.Fatal(err)
+            }
+
+            s_top := string(top_out[:])
+            lines_top := strings.Split(s_top, "\n")
+            line_num := 0
+            for _, line_top := range(lines_top) {
+                line_num += 1
+                fmt.Printf("top: %s", line_top)
+                log.Println(line_top)
+                if line_num == top_lines {
+                    break
+                }
+            }
+        } else {
+            fmt.Println("System load ok")
+        }
+        // only need first line of w command
+        break
+    }
+}
