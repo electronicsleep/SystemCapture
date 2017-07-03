@@ -71,7 +71,7 @@ func main() {
 
             if top_err != nil {
                 fmt.Println("ERROR:")
-                //log.Fatal(err)
+                log.Fatal(err)
             }
 
             s_top := string(top_out[:])
