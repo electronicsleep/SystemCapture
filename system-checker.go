@@ -61,13 +61,18 @@ func main() {
         if int_load5 > threshold {
             fmt.Println("Over threshold load5")
 
-            //if runtime.GOOS == "linux" {
+            var top_out []byte
+            var top_err error = nil
+
+            if (runtime.GOOS == "linux") {
             // Linux
-            //top_out, top_err := exec.Command("top -b -n 1").Output()
-            //} else {
+            fmt.Println("Linux")
+            top_out, top_err = exec.Command("top", "-bn1").Output()
+            } else {
             // Mac
-            top_out, top_err := exec.Command("top", "-l1").Output()
-            //}
+            fmt.Println("MacOS")
+            top_out, top_err = exec.Command("top", "-l1").Output()
+            }
 
             if top_err != nil {
                 fmt.Println("ERROR:")
@@ -79,7 +84,7 @@ func main() {
             line_num := 0
             for _, line_top := range(lines_top) {
                 line_num += 1
-                fmt.Printf("top: %s", line_top)
+                fmt.Printf("TOP: %s", line_top + "\n")
                 log.Println(line_top)
                 if line_num == top_lines {
                     break
