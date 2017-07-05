@@ -1,8 +1,8 @@
 /*
-# Author: https://github.com/electronicsleep
-# Date: 07/03/2017
-# Purpose: Check systems load/top
-# Released under the BSD license
+// Author: https://github.com/electronicsleep
+// Date: 07/03/2017
+// Purpose: Go application to capture system information when threholds are reached
+// Released under the BSD license
 */
 
 package main
@@ -20,20 +20,20 @@ import (
 func main() {
 
     // CPU threshold
-    threshold := 2
+    threshold := 0
     // Number of top lines to capture
     top_lines := 25
 
     fmt.Println("OS:",runtime.GOOS)
 
-    f, err := os.OpenFile("system-checker.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+    f, err := os.OpenFile("SystemCapture.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
     if err != nil {
         fmt.Println("Error opening file: %v", err)
     }
     defer f.Close()
 
     log.SetOutput(f)
-    log.Println("Starting system-checker")
+    log.Println("Starting SystemCapture")
 
     fmt.Println("Checking System: Load")
     out, err := exec.Command("w").Output()
@@ -51,8 +51,8 @@ func main() {
         //load15 := items_len-1
         //load10 := items_len-2
         load5 := items_len-3
-        fmt.Println("Threshold", threshold)
-        //fmt.Println("s[load5]", s[load5])
+        fmt.Println("Threshold:", threshold)
+        fmt.Println("Load:", s[load5])
         s_load5 := strings.Split(s[load5], ".")
         int_load5, err := strconv.Atoi(s_load5[0])
         if err != nil {
@@ -93,7 +93,7 @@ func main() {
         } else {
             fmt.Println("System load ok")
         }
-        // only need first line of w command
+        // Only need first line of w command
         break
     }
 }
