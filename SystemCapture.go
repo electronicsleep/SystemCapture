@@ -1,7 +1,7 @@
 /*
 // Author: https://github.com/electronicsleep
 // Date: 07/03/2017
-// Purpose: Go application to capture system information when threholds are reached
+// Purpose: Go application to capture system information when thresholds are reached
 // Released under the BSD license
 */
 
