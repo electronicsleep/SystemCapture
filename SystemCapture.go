@@ -103,7 +103,7 @@ func main() {
             }
 
             s_netstat := string(netstat_out[:])
-            fmt.Printf("TOP: %s", s_netstat + "\n")
+            fmt.Printf("NETSTAT: %s", s_netstat + "\n")
             log.Println(s_netstat)
 
 
