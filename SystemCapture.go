@@ -61,6 +61,8 @@ func main() {
         if int_load5 > threshold {
             fmt.Println("Over threshold load5")
 
+            // Top
+
             var top_out []byte
             var top_err error = nil
 
@@ -90,6 +92,21 @@ func main() {
                     break
                 }
             }
+
+            // Netstat
+
+            netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
+
+            if netstat_err != nil {
+                fmt.Println("ERROR:")
+                log.Fatal(err)
+            }
+
+            s_netstat := string(netstat_out[:])
+            fmt.Printf("TOP: %s", s_netstat + "\n")
+            log.Println(s_netstat)
+
+
         } else {
             fmt.Println("System load ok")
         }
