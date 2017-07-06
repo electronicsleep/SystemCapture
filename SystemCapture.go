@@ -23,6 +23,8 @@ func main() {
     threshold := 0
     // Number of top lines to capture
     top_lines := 25
+    // Check Netstat
+    var check_netstat bool = false
 
     fmt.Println("OS:",runtime.GOOS)
 
@@ -94,17 +96,19 @@ func main() {
             }
 
             // Netstat
+            if check_netstat {
 
-            netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
+                netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
 
-            if netstat_err != nil {
-                fmt.Println("ERROR:")
-                log.Fatal(err)
+                if netstat_err != nil {
+                    fmt.Println("ERROR:")
+                    log.Fatal(err)
+                }
+
+                s_netstat := string(netstat_out[:])
+                fmt.Printf("NETSTAT: %s", s_netstat + "\n")
+                log.Println(s_netstat)
             }
-
-            s_netstat := string(netstat_out[:])
-            fmt.Printf("NETSTAT: %s", s_netstat + "\n")
-            log.Println(s_netstat)
 
 
         } else {
