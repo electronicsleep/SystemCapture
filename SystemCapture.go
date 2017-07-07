@@ -17,6 +17,14 @@ import (
     "runtime"
 )
 
+// CPU threshold
+const threshold int = 0
+// Number of top lines to capture
+const top_lines int = 25
+// Check CMDs 
+const check_netstat bool = true
+const check_ps bool = true
+
 func captureCommand(cmd string) {
 
     cmd_out, cmd_err := exec.Command(cmd).Output()
@@ -33,14 +41,6 @@ func captureCommand(cmd string) {
 }
 
 func main() {
-
-    // CPU threshold
-    threshold := 0
-    // Number of top lines to capture
-    top_lines := 25
-    // Check CMDs 
-    var check_netstat bool = true
-    var check_ps bool = true
 
     fmt.Println("OS:",runtime.GOOS)
 
@@ -80,7 +80,6 @@ func main() {
             fmt.Println("Over threshold load5")
 
             // Top
-
             var top_out []byte
             var top_err error = nil
 
@@ -145,6 +144,16 @@ func main() {
             captureCommand("ps")
             // lsof
             captureCommand("lsof")
+            // vmstat
+            if (runtime.GOOS == "linux") {
+            captureCommand("vmstat")
+            } else {
+            captureCommand("vm_stat")
+            }
+            // iostat
+            captureCommand("iostat")
+            // Mac
+
 
         } else {
             fmt.Println("System load ok")
