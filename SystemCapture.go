@@ -38,8 +38,9 @@ func main() {
     threshold := 0
     // Number of top lines to capture
     top_lines := 25
-    // Check Netstat
-    var check_netstat bool = false
+    // Check CMDs 
+    var check_netstat bool = true
+    var check_ps bool = true
 
     fmt.Println("OS:",runtime.GOOS)
 
@@ -110,7 +111,7 @@ func main() {
                 }
             }
 
-            // Netstat
+            // netstat -ta
             if check_netstat {
 
                 netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
@@ -125,10 +126,25 @@ func main() {
                 log.Println(s_netstat)
             }
 
-            // Ps
+            // ps -ef 
+            if check_ps {
 
+                cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
+
+                if cmd_err != nil {
+                    fmt.Println("ERROR:")
+                    log.Fatal(err)
+                }
+
+                s_cmd := string(cmd_out[:])
+                fmt.Printf("PSEF: %s", s_cmd + "\n")
+                log.Println(s_cmd)
+            }
+
+            // ps
             captureCommand("ps")
-
+            // lsof
+            captureCommand("lsof")
 
         } else {
             fmt.Println("System load ok")
