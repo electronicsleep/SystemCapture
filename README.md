@@ -7,7 +7,6 @@ Ever want to capture system info during a spike? This is for you.
 Tested and works with MacOS, BSD and Linux.
 
 ```
-# Run in forground
 go run SystemCapture.go
 
 # Run in background
