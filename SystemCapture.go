@@ -17,6 +17,21 @@ import (
     "runtime"
 )
 
+func captureCommand(cmd string) {
+
+    cmd_out, cmd_err := exec.Command(cmd).Output()
+
+    if cmd_err != nil {
+        fmt.Println("ERROR:")
+        log.Fatal(cmd_err)
+    }
+
+    s_cmd := string(cmd_out[:])
+    fmt.Printf("%s: %s", strings.ToUpper(cmd), s_cmd + "\n")
+    log.Println(s_cmd)
+
+}
+
 func main() {
 
     // CPU threshold
@@ -109,6 +124,10 @@ func main() {
                 fmt.Printf("NETSTAT: %s", s_netstat + "\n")
                 log.Println(s_netstat)
             }
+
+            // Ps
+
+            captureCommand("ps")
 
 
         } else {
