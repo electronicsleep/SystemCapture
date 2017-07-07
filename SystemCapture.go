@@ -152,13 +152,11 @@ func main() {
             }
             // iostat
             captureCommand("iostat")
-            // Mac
 
 
         } else {
             fmt.Println("System load ok")
         }
-        // Only need first line of w command
         break
     }
 }
