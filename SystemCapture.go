@@ -12,14 +12,14 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
+  "runtime"
 	"time"
 )
 
 // CPU threshold
-const threshold int = 0
+const threshold int = 4
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -49,7 +49,9 @@ func captureCommand(cmd string) {
 func main() {
 
 	for {
+		log.Println("Starting SystemCapture")
 		fmt.Println("OS:", runtime.GOOS)
+		fmt.Println("CPU:", runtime.NumCPU())
 
 		f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
@@ -58,7 +60,6 @@ func main() {
 		defer f.Close()
 
 		log.SetOutput(f)
-		log.Println("Starting SystemCapture")
 
 		fmt.Println("Checking System: Load")
 		out, err := exec.Command("w").Output()
