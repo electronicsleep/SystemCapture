@@ -22,7 +22,7 @@ import (
 var threshold int = runtime.NumCPU()
 
 // CPU threshold manually set
-//const threshold int = 4
+//const threshold int = 0
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -51,8 +51,8 @@ func captureCommand(cmd string) {
 
 func main() {
 
+	log.Println("Starting SystemCapture")
 	for {
-		log.Println("Starting SystemCapture")
 		fmt.Println("OS:", runtime.GOOS)
 		fmt.Println("CPU:", runtime.NumCPU())
 
