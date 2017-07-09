@@ -54,7 +54,7 @@ func main() {
 	log.Println("Starting SystemCapture")
 	for {
 		fmt.Println("OS:", runtime.GOOS)
-		fmt.Println("CPU:", runtime.NumCPU())
+		fmt.Println("CPU Cores:", runtime.NumCPU())
 
 		f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
@@ -89,7 +89,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Conversion issue")
 			}
-			fmt.Println("load: ", int_load1, " ", int_load5, " ", int_load15)
+			fmt.Println("Load: ", int_load1, " ", int_load5, " ", int_load15)
 			if int_load1 > threshold || int_load5 > threshold || int_load15 > threshold {
 				fmt.Println("Over threshold load5")
 
