@@ -1,7 +1,7 @@
 /*
 // Author: https://github.com/electronicsleep
 // Date: 07/03/2017
-// Purpose: Go application to capture system information when thresholds are reached
+// Purpose: Golang application to capture system information when thresholds are reached
 // Released under the BSD license
 */
 
@@ -19,7 +19,7 @@ import (
 )
 
 // CPU threshold
-const threshold int = 5
+const threshold int = 0
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -91,11 +91,11 @@ func main() {
 				var top_err error = nil
 
 				if runtime.GOOS == "linux" {
-					// Linux
+					// Linux specific top
 					fmt.Println("Linux")
 					top_out, top_err = exec.Command("top", "-bn1").Output()
 				} else {
-					// Mac
+					// MacOS specific top
 					fmt.Println("MacOS")
 					top_out, top_err = exec.Command("top", "-l1").Output()
 				}
