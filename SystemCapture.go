@@ -19,7 +19,11 @@ import (
 )
 
 // CPU threshold
-const threshold int = 4
+//const num_cpu int = runtime.NumCPU()
+var threshold int = runtime.NumCPU()
+// Manually set
+//const threshold int = 4
+
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -74,17 +78,22 @@ func main() {
 			log.Println(line)
 			s := strings.Split(line, " ")
 			items_len := len(s)
-			//load15 := items_len-1
-			//load10 := items_len-2
-			load5 := items_len - 3
+			load15 := items_len - 1
+			load5 := items_len - 2
+			load1 := items_len - 3
 			fmt.Println("Threshold:", threshold)
-			fmt.Println("Load:", s[load5])
+			//fmt.Println("Load:", s[load5])
+			s_load15 := strings.Split(s[load15], ".")
 			s_load5 := strings.Split(s[load5], ".")
+			s_load1 := strings.Split(s[load1], ".")
+			int_load15, err := strconv.Atoi(s_load15[0])
 			int_load5, err := strconv.Atoi(s_load5[0])
+			int_load1, err := strconv.Atoi(s_load1[0])
 			if err != nil {
 				fmt.Println("Conversion issue")
 			}
-			if int_load5 > threshold {
+      fmt.Println("load: ", int_load1, " ", int_load5, " ", int_load15)
+			if int_load1 > threshold || int_load5 > threshold || int_load15 > threshold {
 				fmt.Println("Over threshold load5")
 
 				// Top
