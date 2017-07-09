@@ -51,6 +51,7 @@ func captureCommand(cmd string) {
 
 func main() {
 
+	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Println("Error opening file: %v", err)
@@ -58,12 +59,13 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 
+	// Starting SystemCapture
 	log.Println("Starting SystemCapture")
+	fmt.Println("OS:", runtime.GOOS)
+	fmt.Println("CPU Cores:", runtime.NumCPU())
 	for {
-		fmt.Println("OS:", runtime.GOOS)
-		fmt.Println("CPU Cores:", runtime.NumCPU())
 
-		fmt.Println("Checking System: Load")
+		fmt.Println("--> Checking System: Load")
 		out, err := exec.Command("w").Output()
 		if err != nil {
 			log.Fatal(err)
