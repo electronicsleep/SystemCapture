@@ -56,13 +56,12 @@ func main() {
 		fmt.Println("Error opening file: %v", err)
 	}
 	defer f.Close()
+	log.SetOutput(f)
 
 	log.Println("Starting SystemCapture")
 	for {
 		fmt.Println("OS:", runtime.GOOS)
 		fmt.Println("CPU Cores:", runtime.NumCPU())
-
-		log.SetOutput(f)
 
 		fmt.Println("Checking System: Load")
 		out, err := exec.Command("w").Output()
