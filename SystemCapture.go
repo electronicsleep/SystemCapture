@@ -60,7 +60,8 @@ func main() {
 	log.SetOutput(f)
 
 	// Starting SystemCapture
-	log.Println("Starting SystemCapture")
+	log.Println("--> Starting SystemCapture")
+	fmt.Println("--> Starting SystemCapture")
 	fmt.Println("OS:", runtime.GOOS)
 	fmt.Println("CPU Cores:", runtime.NumCPU())
 	for {
@@ -173,7 +174,7 @@ func main() {
 			}
 			break
 		}
-		fmt.Println("Sleep for:", time.Minute*sleep_interval)
+		fmt.Println("Sleep for:", time.Minute*sleep_interval, "\n")
 		time.Sleep(time.Minute * sleep_interval)
 	}
 }
