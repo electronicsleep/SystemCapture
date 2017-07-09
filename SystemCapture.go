@@ -70,7 +70,7 @@ func main() {
 		s := string(out[:])
 		lines := strings.Split(s, "\n")
 		for _, line := range lines {
-			fmt.Println("LINE:", line)
+			fmt.Println("W:", line)
 			log.Println(line)
 			s := strings.Split(line, " ")
 			items_len := len(s)
