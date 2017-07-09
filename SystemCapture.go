@@ -21,7 +21,7 @@ import (
 // CPU threshold based on number of CPU cores
 var threshold int = runtime.NumCPU()
 
-// Manually set
+// CPU threshold manually set
 //const threshold int = 4
 
 // Minutes to sleep between runs
@@ -69,11 +69,10 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("w: %s\n", out)
+		fmt.Printf("W: %s\n", out)
 		s := string(out[:])
 		lines := strings.Split(s, "\n")
 		for _, line := range lines {
-			fmt.Println("W:", line)
 			log.Println(line)
 			s := strings.Split(line, " ")
 			items_len := len(s)
@@ -81,7 +80,6 @@ func main() {
 			load5 := items_len - 2
 			load1 := items_len - 3
 			fmt.Println("Threshold:", threshold)
-			//fmt.Println("Load:", s[load5])
 			s_load15 := strings.Split(s[load15], ".")
 			s_load5 := strings.Split(s[load5], ".")
 			s_load1 := strings.Split(s[load1], ".")
