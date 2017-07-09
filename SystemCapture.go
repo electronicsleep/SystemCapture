@@ -169,7 +169,7 @@ func main() {
 				captureCommand("iostat")
 
 			} else {
-				fmt.Println("System load: Ok")
+				fmt.Println("--> System load: Ok")
 			}
 			break
 		}
