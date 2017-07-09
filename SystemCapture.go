@@ -12,18 +12,17 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
-  "runtime"
 	"time"
 )
 
-// CPU threshold
-//const num_cpu int = runtime.NumCPU()
+// CPU threshold based on number of CPU cores
 var threshold int = runtime.NumCPU()
+
 // Manually set
 //const threshold int = 4
-
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -92,7 +91,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Conversion issue")
 			}
-      fmt.Println("load: ", int_load1, " ", int_load5, " ", int_load15)
+			fmt.Println("load: ", int_load1, " ", int_load5, " ", int_load15)
 			if int_load1 > threshold || int_load5 > threshold || int_load15 > threshold {
 				fmt.Println("Over threshold load5")
 
