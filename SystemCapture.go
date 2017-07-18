@@ -30,10 +30,8 @@ const sleep_interval time.Duration = 1
 // Number of top lines to capture
 const top_lines int = 25
 
-// Check CMDs
-const check_netstat bool = true
-const check_ps bool = true
-const check_df bool = true
+// Verbose: Check netstat, ps, df
+const verbose = false
 
 func captureCommand(cmd string) {
 
@@ -128,7 +126,7 @@ func main() {
 				}
 
 				// netstat -ta
-				if check_netstat {
+				if verbose {
 
 					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
 
@@ -143,7 +141,7 @@ func main() {
 				}
 
 				// ps -ef
-				if check_ps {
+				if verbose {
 
 					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
 
@@ -158,7 +156,7 @@ func main() {
 				}
 
 				// df -h
-				if check_df {
+				if verbose {
 
 					cmd_out, cmd_err := exec.Command("df", "-h").Output()
 
@@ -175,7 +173,9 @@ func main() {
 				// ps
 				captureCommand("ps")
 				// lsof
-				captureCommand("lsof")
+				if verbose {
+				  captureCommand("lsof")
+        }
 				// vmstat
 				if runtime.GOOS == "linux" {
 					captureCommand("vmstat")
@@ -183,7 +183,9 @@ func main() {
 					captureCommand("vm_stat")
 				}
 				// iostat
-				captureCommand("iostat")
+				if verbose {
+				  captureCommand("iostat")
+        }
 
 			} else {
 				fmt.Println("--> System load: Ok")
