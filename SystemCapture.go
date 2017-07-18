@@ -19,10 +19,10 @@ import (
 )
 
 // CPU threshold based on number of CPU cores
-var threshold int = runtime.NumCPU()
+//var threshold int = runtime.NumCPU()
 
 // CPU threshold manually set
-//const threshold int = 0
+const threshold int = -1
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -33,6 +33,7 @@ const top_lines int = 25
 // Check CMDs
 const check_netstat bool = true
 const check_ps bool = true
+const check_df bool = true
 
 func captureCommand(cmd string) {
 
@@ -110,7 +111,7 @@ func main() {
 				}
 
 				if top_err != nil {
-					fmt.Println("ERROR:")
+					fmt.Println("ERROR:", err)
 					log.Fatal(err)
 				}
 
@@ -132,7 +133,7 @@ func main() {
 					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
 
 					if netstat_err != nil {
-						fmt.Println("ERROR:")
+						fmt.Println("ERROR:", err)
 						log.Fatal(err)
 					}
 
@@ -147,12 +148,27 @@ func main() {
 					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
 
 					if cmd_err != nil {
-						fmt.Println("ERROR:")
+						fmt.Println("ERROR:", err)
 						log.Fatal(err)
 					}
 
 					s_cmd := string(cmd_out[:])
 					fmt.Printf("PSEF: %s", s_cmd+"\n")
+					log.Println(s_cmd)
+				}
+
+				// df -h
+				if check_df {
+
+					cmd_out, cmd_err := exec.Command("df", "-h").Output()
+
+					if cmd_err != nil {
+						fmt.Println("ERROR:", err)
+						log.Fatal(err)
+					}
+
+					s_cmd := string(cmd_out[:])
+					fmt.Printf("DFH: %s", s_cmd+"\n")
 					log.Println(s_cmd)
 				}
 

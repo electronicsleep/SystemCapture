@@ -4,6 +4,7 @@ MAINTAINER Chris Robertson https://github.com/electronicsleep
 
 RUN mkdir -p /usr/src/app
 RUN apt-get update && apt-get install golang -y
+RUN apt-get install sysstat net-tools lsof -y
 
 ADD SystemCapture.go /usr/src/app
 
