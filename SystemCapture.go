@@ -30,7 +30,7 @@ const sleep_interval time.Duration = 1
 // Number of top lines to capture
 const top_lines int = 25
 
-// Verbose: Check netstat, ps, df
+// Verbose: Check netstat, ps -ef, df -h, lsof, iostat
 const verbose = false
 
 func captureCommand(cmd string) {

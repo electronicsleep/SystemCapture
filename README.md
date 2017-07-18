@@ -6,7 +6,11 @@ Ever want to capture system info during a spike? This is for you.
 
 Set automatically to the number of CPU cores on the system.
 
-Checks: w, top, netstat -ta, ps -ef, lsof, vmstat, iostat
+Checks: w, top, vmstat
+
+Checks Verbose: w, top, netstat -ta, ps -ef, lsof, vmstat, iostat
+
+Raise threshold to desired level or use auto NumCPU option.
 
 Tested/working with Debian Linux and MacOS.
 
