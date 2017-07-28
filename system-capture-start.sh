@@ -1,5 +1,8 @@
 #!/bin/bash
-echo "Start SystemCapture"
+echo "### Start rsync"
+#service rsync start
+echo "### Start SystemCapture"
 ./SystemCapture &
 echo "Add side proc with SystemCapture"
-echo "### STARTING APP ####"
+echo "### Start app"
+sleep 10
