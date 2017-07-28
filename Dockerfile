@@ -12,6 +12,7 @@ RUN mkdir -p /usr/src/app
 #RUN apt-get update && apt-get install golang -y
 
 ADD SystemCapture /usr/src/app
+ADD system-capture-start.sh /usr/src/app
 
 WORKDIR /usr/src/app
 EXPOSE 5000
@@ -19,4 +20,8 @@ EXPOSE 5000
 #To build/run go program
 #CMD ["go", "run", "SystemCapture.go"]
 
-CMD ["./SystemCapture"]
+#Multi process docker update start file
+CMD ["bash", "system-capture-start.sh"]
+
+#Run normally
+#CMD ["./SystemCapture"]
