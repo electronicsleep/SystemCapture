@@ -17,11 +17,16 @@ Tested/working with Debian Linux and MacOS Sierra.
 Should work on all Linux and MacOS versions.
 
 ```
+# Build
+go build SystemCapture.go
+
 # Run
 go run SystemCapture.go
 
 # Run in background
 nohup go run SystemCapture.go
 ```
+
+# Resources
 
 https://golang.org
