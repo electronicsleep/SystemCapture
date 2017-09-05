@@ -8,6 +8,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -19,10 +20,10 @@ import (
 )
 
 // CPU threshold based on number of CPU cores
-//var threshold int = runtime.NumCPU()
+var cpu_cores int = runtime.NumCPU()
 
 // CPU threshold manually set
-const threshold int = -1
+var threshold int = -1
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -31,7 +32,7 @@ const sleep_interval time.Duration = 1
 const top_lines int = 25
 
 // Verbose: Check netstat, ps -ef, df -h, lsof, iostat
-const verbose = false
+var verbose = false
 
 func captureCommand(cmd string) {
 
@@ -49,6 +50,24 @@ func captureCommand(cmd string) {
 }
 
 func main() {
+
+	verboseFlag := flag.Bool("v", false, "Verbose checks")
+	cpuFlag := flag.Bool("c", false, "Detect CPU cores")
+
+	flag.Parse()
+
+	verbose = *verboseFlag
+	cpuFlagSet := *cpuFlag
+
+	if cpuFlagSet == true {
+		println("Setting threshold to numCPU")
+		threshold = cpu_cores
+	}
+
+	println("Verbose:", verbose)
+	println("Threshold:", threshold)
+
+	os.Exit(0)
 
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -174,8 +193,8 @@ func main() {
 				captureCommand("ps")
 				// lsof
 				if verbose {
-				  captureCommand("lsof")
-        }
+					captureCommand("lsof")
+				}
 				// vmstat
 				if runtime.GOOS == "linux" {
 					captureCommand("vmstat")
@@ -184,8 +203,8 @@ func main() {
 				}
 				// iostat
 				if verbose {
-				  captureCommand("iostat")
-        }
+					captureCommand("iostat")
+				}
 
 			} else {
 				fmt.Println("--> System load: Ok")

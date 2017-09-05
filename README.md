@@ -6,9 +6,9 @@ Ever want to capture system info during a spike? This is for you.
 
 Can set automatically to the number of CPU cores on the system.
 
-Checks: w, top, vmstat
+**Checks:** w, top, vmstat
 
-Verbose Checks: w, top, netstat -ta, ps -ef, lsof, vmstat, iostat
+**Verbose Checks:** w, top, netstat -ta, ps -ef, lsof, vmstat, iostat
 
 Raise threshold to desired level or use auto NumCPU option to log details.
 
@@ -22,6 +22,12 @@ go build SystemCapture.go
 
 # Run
 go run SystemCapture.go
+
+# Run Verbose
+go run SystemCapture.go -v
+
+# Detect CPU with Verbose
+go run SystemCapture.go -v -c
 
 # Run in background
 nohup go run SystemCapture.go
