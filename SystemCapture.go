@@ -104,7 +104,7 @@ func main() {
 		s := string(out[:])
 		lines := strings.Split(s, "\n")
 		for _, line := range lines {
-			log.Println(line)
+			log.Println("W: " + line)
 			s := strings.Split(line, " ")
 			items_len := len(s)
 			load15 := items_len - 1
