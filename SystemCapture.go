@@ -67,8 +67,6 @@ func main() {
 	println("Verbose:", verbose)
 	println("Threshold:", threshold)
 
-	os.Exit(0)
-
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
