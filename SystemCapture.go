@@ -34,7 +34,7 @@ const top_lines int = 25
 // Verbose: Check netstat, ps -ef, df -h, lsof, iostat
 var verbose = false
 
-func captureCommand(cmd string) {
+func captureCommand(tf string, cmd string) {
 
 	cmd_out, cmd_err := exec.Command(cmd).Output()
 
@@ -42,11 +42,21 @@ func captureCommand(cmd string) {
 		fmt.Println("ERROR:")
 		log.Fatal(cmd_err)
 	}
+	s_cmd := string(cmd_out[:])
+	cmd_u := strings.ToUpper(cmd)
+	logOutput(tf, cmd_u+":", s_cmd)
+}
+
+func logOutput(date string, cmd string, cmd_out string) {
 
 	s_cmd := string(cmd_out[:])
-	fmt.Printf("%s: %s", strings.ToUpper(cmd), s_cmd+"\n")
-	log.Println(s_cmd)
-
+	lines_cmd := strings.Split(s_cmd, "\n")
+	line_num := 0
+	for _, line_cmd := range lines_cmd {
+		line_num += 1
+		fmt.Println(date, cmd, line_cmd)
+		log.Println(cmd, line_cmd)
+	}
 }
 
 func main() {
@@ -81,6 +91,9 @@ func main() {
 	fmt.Println("OS:", runtime.GOOS)
 	fmt.Println("CPU Cores:", runtime.NumCPU())
 	for {
+
+		t := time.Now()
+		tf := t.Format("2006/01/02 15:04:05")
 
 		fmt.Println("--> Checking System: Load")
 		out, err := exec.Command("w").Output()
@@ -131,16 +144,7 @@ func main() {
 				}
 
 				s_top := string(top_out[:])
-				lines_top := strings.Split(s_top, "\n")
-				line_num := 0
-				for _, line_top := range lines_top {
-					line_num += 1
-					fmt.Printf("TOP: %s", line_top+"\n")
-					log.Println(line_top)
-					if line_num == top_lines {
-						break
-					}
-				}
+				logOutput(tf, "TOP:", s_top)
 
 				// netstat -ta
 
@@ -152,8 +156,7 @@ func main() {
 				}
 
 				s_netstat := string(netstat_out[:])
-				fmt.Printf("NETSTAT: %s", s_netstat+"\n")
-				log.Println(s_netstat)
+				logOutput(tf, "NETSTAT:", s_netstat)
 
 				// ps -ef
 
@@ -165,8 +168,7 @@ func main() {
 				}
 
 				s_cmd := string(cmd_out[:])
-				fmt.Printf("PSEF: %s", s_cmd+"\n")
-				log.Println(s_cmd)
+				logOutput(tf, "PSEF:", s_cmd)
 
 				// df -h
 
@@ -178,24 +180,23 @@ func main() {
 				}
 
 				s_cmd = string(cmd_out[:])
-				fmt.Printf("DFH: %s", s_cmd+"\n")
-				log.Println(s_cmd)
+				logOutput(tf, "DFH:", s_cmd)
 
 				// ps
-				captureCommand("ps")
+				captureCommand(tf, "ps")
 				// lsof
 				if verbose {
-					captureCommand("lsof")
+					captureCommand(tf, "lsof")
 				}
 				// vmstat
 				if runtime.GOOS == "linux" {
-					captureCommand("vmstat")
+					captureCommand(tf, "vmstat")
 				} else {
-					captureCommand("vm_stat")
+					captureCommand(tf, "vm_stat")
 				}
 				// iostat
 				if verbose {
-					captureCommand("iostat")
+					captureCommand(tf, "iostat")
 				}
 
 			} else {
