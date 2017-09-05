@@ -170,14 +170,14 @@ func main() {
 
 				// df -h
 
-				cmd_out, cmd_err := exec.Command("df", "-h").Output()
+				cmd_out, cmd_err = exec.Command("df", "-h").Output()
 
 				if cmd_err != nil {
 					fmt.Println("ERROR:", err)
 					log.Fatal(err)
 				}
 
-				s_cmd := string(cmd_out[:])
+				s_cmd = string(cmd_out[:])
 				fmt.Printf("DFH: %s", s_cmd+"\n")
 				log.Println(s_cmd)
 
