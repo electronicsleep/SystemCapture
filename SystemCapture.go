@@ -60,12 +60,12 @@ func main() {
 	cpuFlagSet := *cpuFlag
 
 	if cpuFlagSet == true {
-		println("Setting threshold to numCPU")
+		fmt.Println("Setting threshold to numCPU")
 		threshold = cpu_cores
 	}
 
-	println("Verbose:", verbose)
-	println("Threshold:", threshold)
+	fmt.Println("Verbose:", verbose)
+	fmt.Println("Threshold:", threshold)
 
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -143,49 +143,43 @@ func main() {
 				}
 
 				// netstat -ta
-				if verbose {
 
-					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
+				netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
 
-					if netstat_err != nil {
-						fmt.Println("ERROR:", err)
-						log.Fatal(err)
-					}
-
-					s_netstat := string(netstat_out[:])
-					fmt.Printf("NETSTAT: %s", s_netstat+"\n")
-					log.Println(s_netstat)
+				if netstat_err != nil {
+					fmt.Println("ERROR:", err)
+					log.Fatal(err)
 				}
+
+				s_netstat := string(netstat_out[:])
+				fmt.Printf("NETSTAT: %s", s_netstat+"\n")
+				log.Println(s_netstat)
 
 				// ps -ef
-				if verbose {
 
-					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
+				cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
 
-					if cmd_err != nil {
-						fmt.Println("ERROR:", err)
-						log.Fatal(err)
-					}
-
-					s_cmd := string(cmd_out[:])
-					fmt.Printf("PSEF: %s", s_cmd+"\n")
-					log.Println(s_cmd)
+				if cmd_err != nil {
+					fmt.Println("ERROR:", err)
+					log.Fatal(err)
 				}
+
+				s_cmd := string(cmd_out[:])
+				fmt.Printf("PSEF: %s", s_cmd+"\n")
+				log.Println(s_cmd)
 
 				// df -h
-				if verbose {
 
-					cmd_out, cmd_err := exec.Command("df", "-h").Output()
+				cmd_out, cmd_err := exec.Command("df", "-h").Output()
 
-					if cmd_err != nil {
-						fmt.Println("ERROR:", err)
-						log.Fatal(err)
-					}
-
-					s_cmd := string(cmd_out[:])
-					fmt.Printf("DFH: %s", s_cmd+"\n")
-					log.Println(s_cmd)
+				if cmd_err != nil {
+					fmt.Println("ERROR:", err)
+					log.Fatal(err)
 				}
+
+				s_cmd := string(cmd_out[:])
+				fmt.Printf("DFH: %s", s_cmd+"\n")
+				log.Println(s_cmd)
 
 				// ps
 				captureCommand("ps")

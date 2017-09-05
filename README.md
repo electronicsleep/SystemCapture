@@ -6,9 +6,9 @@ Ever want to capture system info during a spike? This is for you.
 
 Can set automatically to the number of CPU cores on the system.
 
-**Checks:** w, top, vmstat
+**Checks:** w, top, vmstat, netstat -ta, ps -ef, df
 
-**Verbose Checks:** w, top, netstat -ta, ps -ef, lsof, vmstat, iostat
+**Verbose Checks:** w, top, vmstat, netstat -ta, ps -ef, lsof, iostat, df
 
 Raise threshold to desired level or use auto NumCPU option to log details.
 
