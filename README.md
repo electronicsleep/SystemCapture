@@ -20,6 +20,9 @@ Should work on all Linux and MacOS versions.
 # Build
 go build SystemCapture.go
 
+# Build for Linux
+GOOS=linux go build SystemCapture.go
+
 # Run
 go run SystemCapture.go
 
