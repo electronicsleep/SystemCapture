@@ -23,7 +23,7 @@ import (
 var cpu_cores int = runtime.NumCPU()
 
 // CPU threshold manually set
-var threshold int = -1
+var threshold int = 1
 
 // Minutes to sleep between runs
 const sleep_interval time.Duration = 1
@@ -62,16 +62,19 @@ func logOutput(date string, cmd string, cmd_out string) {
 func main() {
 
 	verboseFlag := flag.Bool("v", false, "Verbose checks")
-	cpuFlag := flag.Bool("c", false, "Detect CPU cores")
+	thresholdFlag := flag.Bool("t", false, "Set threshold instead of using CPU cores")
 
 	flag.Parse()
 
 	verbose = *verboseFlag
-	cpuFlagSet := *cpuFlag
+	thresholdFlagSet := *thresholdFlag
 
-	if cpuFlagSet == true {
+	if thresholdFlagSet == false {
 		fmt.Println("Setting threshold to numCPU")
 		threshold = cpu_cores
+	} else {
+		fmt.Println("Manually set threshold")
+		threshold = threshold
 	}
 
 	fmt.Println("Verbose:", verbose)

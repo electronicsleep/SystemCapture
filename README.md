@@ -4,7 +4,7 @@ Golang application to capture system information when thresholds are reached.
 
 Ever want to capture system info during a spike? This is for you.
 
-Can set automatically to the number of CPU cores on the system.
+Threshold automatically set to the number of CPU cores on the system.
 
 **Checks:** w, top, vmstat, netstat -ta, ps -ef, df
 
@@ -29,8 +29,8 @@ go run SystemCapture.go
 # Run Verbose
 go run SystemCapture.go -v
 
-# Detect CPU with Verbose
-go run SystemCapture.go -v -c
+# Manually set threshold
+go run SystemCapture.go -t
 
 # Run in background
 nohup go run SystemCapture.go
