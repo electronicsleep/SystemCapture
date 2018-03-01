@@ -23,7 +23,7 @@ go build SystemCapture.go
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
-# Run
+# Run threshold is number of CPU cores
 go run SystemCapture.go
 
 # Run Verbose
