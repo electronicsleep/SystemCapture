@@ -73,8 +73,7 @@ func main() {
 		fmt.Println("Setting threshold to numCPU")
 		threshold = cpu_cores
 	} else {
-		fmt.Println("Manually set threshold")
-		threshold = threshold
+		fmt.Println("Using manually set threshold")
 	}
 
 	fmt.Println("Verbose:", verbose)
