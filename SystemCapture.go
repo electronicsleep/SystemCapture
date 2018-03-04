@@ -56,6 +56,9 @@ func logOutput(date string, cmd string, cmd_out string) {
 		line_num += 1
 		fmt.Println(date, cmd, line_cmd)
 		log.Println(cmd, line_cmd)
+		if line_num == top_lines {
+			break
+		}
 	}
 }
 
@@ -148,56 +151,55 @@ func main() {
 				s_top := string(top_out[:])
 				logOutput(tf, "TOP:", s_top)
 
-				// netstat -ta
-
-				netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
-
-				if netstat_err != nil {
-					fmt.Println("ERROR:", err)
-					log.Fatal(err)
-				}
-
-				s_netstat := string(netstat_out[:])
-				logOutput(tf, "NETSTAT:", s_netstat)
-
-				// ps -ef
-
-				cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
-
-				if cmd_err != nil {
-					fmt.Println("ERROR:", err)
-					log.Fatal(err)
-				}
-
-				s_cmd := string(cmd_out[:])
-				logOutput(tf, "PSEF:", s_cmd)
-
-				// df -h
-
-				cmd_out, cmd_err = exec.Command("df", "-h").Output()
-
-				if cmd_err != nil {
-					fmt.Println("ERROR:", err)
-					log.Fatal(err)
-				}
-
-				s_cmd = string(cmd_out[:])
-				logOutput(tf, "DFH:", s_cmd)
-
-				// ps
-				captureCommand(tf, "ps")
-				// lsof
 				if verbose {
+
+					// netstat -ta
+					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
+
+					if netstat_err != nil {
+						fmt.Println("ERROR:", err)
+						log.Fatal(err)
+					}
+
+					s_netstat := string(netstat_out[:])
+					logOutput(tf, "NETSTAT:", s_netstat)
+
+					// ps -ef
+					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
+
+					if cmd_err != nil {
+						fmt.Println("ERROR:", err)
+						log.Fatal(err)
+					}
+
+					s_cmd := string(cmd_out[:])
+					logOutput(tf, "PSEF:", s_cmd)
+
+					// df -h
+					cmd_out, cmd_err = exec.Command("df", "-h").Output()
+
+					if cmd_err != nil {
+						fmt.Println("ERROR:", err)
+						log.Fatal(err)
+					}
+
+					s_cmd = string(cmd_out[:])
+					logOutput(tf, "DFH:", s_cmd)
+
+					// ps
+					captureCommand(tf, "ps")
+
+					// lsof
 					captureCommand(tf, "lsof")
-				}
-				// vmstat
-				if runtime.GOOS == "linux" {
-					captureCommand(tf, "vmstat")
-				} else {
-					captureCommand(tf, "vm_stat")
-				}
-				// iostat
-				if verbose {
+
+					// vmstat
+					if runtime.GOOS == "linux" {
+						captureCommand(tf, "vmstat")
+					} else {
+						captureCommand(tf, "vm_stat")
+					}
+
+					// iostat
 					captureCommand(tf, "iostat")
 				}
 
