@@ -1,6 +1,6 @@
 # System Capture
 
-Golang application to capture system information when thresholds are reached.
+Simple Golang application to capture system information when thresholds are reached.
 
 Ever want to capture system info during a spike? This is for you.
 
@@ -9,6 +9,8 @@ Threshold automatically set to the number of CPU cores on the system.
 **Checks:** w, top, vmstat, netstat -ta, ps -ef, df
 
 **Verbose Checks:** w, top, vmstat, netstat -ta, ps -ef, lsof, iostat, df
+
+Using docker for tests.
 
 Raise threshold to desired level or use auto NumCPU option to log details.
 

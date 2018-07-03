@@ -1,24 +1,18 @@
-FROM debian:stable
+FROM alpine:latest
 
 MAINTAINER Chris Robertson https://github.com/electronicsleep
 
 RUN mkdir -p /usr/src/app
 
 #For verbose commands
-#RUN apt-get update && apt-get install sysstat net-tools lsof -y
+#RUN apk update && apk install sysstat net-tools lsof
 
-#Test build/run go program Linux
-#RUN apt-get update && apt-get install golang -y
-#ADD SystemCapture.go /usr/src/app
-
-#Test run go program
-RUN apt-get update &&  apt-get install procps -y
+#Test run go program - install w top
+#RUN apk update &&  apk install procps
 ADD SystemCapture /usr/src/app
 
 WORKDIR /usr/src/app
-
-#Test build/run go program
-#RUN go build SystemCapture.go
+EXPOSE 5000
 
 #Run normally
 CMD ["./SystemCapture", "-t"]
