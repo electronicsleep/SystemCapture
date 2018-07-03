@@ -85,7 +85,7 @@ func main() {
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		fmt.Println("Error opening file: %v", err)
+		fmt.Println("Error opening file:")
 	}
 	defer f.Close()
 	log.SetOutput(f)
@@ -93,7 +93,7 @@ func main() {
 	// Starting SystemCapture
 	log.Println("--> Starting SystemCapture")
 	fmt.Println("--> Starting SystemCapture")
-	fmt.Println("OS:", runtime.GOOS)
+	fmt.Println("Detect OS:", runtime.GOOS)
 	fmt.Println("CPU Cores:", runtime.NumCPU())
 	for {
 
@@ -208,7 +208,7 @@ func main() {
 			}
 			break
 		}
-		fmt.Println("Sleep for:", time.Minute*sleep_interval, "\n")
+		fmt.Println("Sleep for:", time.Minute*sleep_interval)
 		time.Sleep(time.Minute * sleep_interval)
 	}
 }
