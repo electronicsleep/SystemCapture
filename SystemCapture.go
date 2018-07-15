@@ -129,16 +129,16 @@ func main() {
 			if int_load1 > threshold || int_load5 > threshold || int_load15 > threshold {
 				fmt.Println("Over threshold load5")
 
-				// Top
+				// CMD: Top
 				var top_out []byte
 				var top_err error = nil
 
 				if runtime.GOOS == "linux" {
-					// Linux specific top
+					// CMD: Linux specific top
 					fmt.Println("Linux")
 					top_out, top_err = exec.Command("top", "-bn1").Output()
 				} else {
-					// MacOS specific top
+					// CMD: MacOS specific top
 					fmt.Println("MacOS")
 					top_out, top_err = exec.Command("top", "-l1").Output()
 				}
@@ -153,7 +153,7 @@ func main() {
 
 				if verbose {
 
-					// netstat -ta
+					// CMD: netstat -ta
 					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
 
 					if netstat_err != nil {
@@ -164,7 +164,7 @@ func main() {
 					s_netstat := string(netstat_out[:])
 					logOutput(tf, "NETSTAT:", s_netstat)
 
-					// ps -ef
+					// CMD: ps -ef
 					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
 
 					if cmd_err != nil {
@@ -175,7 +175,7 @@ func main() {
 					s_cmd := string(cmd_out[:])
 					logOutput(tf, "PSEF:", s_cmd)
 
-					// df -h
+					// CMD: df -h
 					cmd_out, cmd_err = exec.Command("df", "-h").Output()
 
 					if cmd_err != nil {
@@ -186,20 +186,20 @@ func main() {
 					s_cmd = string(cmd_out[:])
 					logOutput(tf, "DFH:", s_cmd)
 
-					// ps
+					// CMD: ps
 					captureCommand(tf, "ps")
 
-					// lsof
+					// CMD: lsof
 					captureCommand(tf, "lsof")
 
-					// vmstat
+					// CMD: vmstat
 					if runtime.GOOS == "linux" {
 						captureCommand(tf, "vmstat")
 					} else {
 						captureCommand(tf, "vm_stat")
 					}
 
-					// iostat
+					// CMD: iostat
 					captureCommand(tf, "iostat")
 				}
 

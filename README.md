@@ -2,6 +2,8 @@
 
 Simple Golang application to capture system information when thresholds are reached.
 
+Update with your own commands to capture info, search for CMD:
+
 Ever want to capture system info during a spike? This is for you.
 
 Threshold automatically set to the number of CPU cores on the system.
