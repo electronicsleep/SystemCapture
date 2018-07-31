@@ -1,6 +1,5 @@
 /*
 // Author: https://github.com/electronicsleep
-// Date: 07/03/2017
 // Purpose: Golang application to capture system information when thresholds are reached
 // Released under the BSD license
 */
@@ -20,43 +19,43 @@ import (
 )
 
 // CPU threshold based on number of CPU cores
-var cpu_cores int = runtime.NumCPU()
+var cpuCores = runtime.NumCPU()
 
 // CPU threshold manually set
-var threshold int = 1
+var threshold = 1
 
 // Minutes to sleep between runs
-const sleep_interval time.Duration = 1
+const sleepInterval time.Duration = 1
 
 // Number of top lines to capture
-const top_lines int = 25
+const topLines int = 25
 
 // Verbose: Check netstat, ps -ef, df -h, lsof, iostat
 var verbose = false
 
 func captureCommand(tf string, cmd string) {
 
-	cmd_out, cmd_err := exec.Command(cmd).Output()
+	cmdOut, cmdErr := exec.Command(cmd).Output()
 
-	if cmd_err != nil {
+	if cmdErr != nil {
 		fmt.Println("ERROR:")
-		log.Fatal(cmd_err)
+		log.Fatal(cmdErr)
 	}
-	s_cmd := string(cmd_out[:])
-	cmd_u := strings.ToUpper(cmd)
-	logOutput(tf, cmd_u+":", s_cmd)
+	sCmd := string(cmdOut[:])
+	cmdU := strings.ToUpper(cmd)
+	logOutput(tf, cmdU+":", sCmd)
 }
 
-func logOutput(date string, cmd string, cmd_out string) {
+func logOutput(date string, cmd string, cmdOut string) {
 
-	s_cmd := string(cmd_out[:])
-	lines_cmd := strings.Split(s_cmd, "\n")
-	line_num := 0
-	for _, line_cmd := range lines_cmd {
-		line_num += 1
-		fmt.Println(date, cmd, line_cmd)
-		log.Println(cmd, line_cmd)
-		if line_num == top_lines {
+	sCmd := string(cmdOut[:])
+	linesCmd := strings.Split(sCmd, "\n")
+	lineNum := 0
+	for _, lineCmd := range linesCmd {
+		lineNum++
+		fmt.Println(date, cmd, lineCmd)
+		log.Println(cmd, lineCmd)
+		if lineNum == topLines {
 			break
 		}
 	}
@@ -74,7 +73,7 @@ func main() {
 
 	if thresholdFlagSet == false {
 		fmt.Println("Setting threshold to numCPU")
-		threshold = cpu_cores
+		threshold = cpuCores
 	} else {
 		fmt.Println("Using manually set threshold")
 	}
@@ -111,80 +110,80 @@ func main() {
 		for _, line := range lines {
 			log.Println("W: " + line)
 			s := strings.Split(line, " ")
-			items_len := len(s)
-			load15 := items_len - 1
-			load5 := items_len - 2
-			load1 := items_len - 3
+			itemsLen := len(s)
+			load15 := itemsLen - 1
+			load5 := itemsLen - 2
+			load1 := itemsLen - 3
 			fmt.Println("Threshold:", threshold)
-			s_load15 := strings.Split(s[load15], ".")
-			s_load5 := strings.Split(s[load5], ".")
-			s_load1 := strings.Split(s[load1], ".")
-			int_load15, err := strconv.Atoi(s_load15[0])
-			int_load5, err := strconv.Atoi(s_load5[0])
-			int_load1, err := strconv.Atoi(s_load1[0])
+			sLoad15 := strings.Split(s[load15], ".")
+			sLoad5 := strings.Split(s[load5], ".")
+			sLoad1 := strings.Split(s[load1], ".")
+			intLoad15, err := strconv.Atoi(sLoad15[0])
+			intLoad5, err := strconv.Atoi(sLoad5[0])
+			intLoad1, err := strconv.Atoi(sLoad1[0])
 			if err != nil {
 				fmt.Println("Conversion issue")
 			}
-			fmt.Println("Load: ", int_load1, " ", int_load5, " ", int_load15)
-			if int_load1 > threshold || int_load5 > threshold || int_load15 > threshold {
+			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
+			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
 				fmt.Println("Over threshold load5")
 
 				// CMD: Top
-				var top_out []byte
-				var top_err error = nil
+				var topOut []byte
+				var topErr error = nil
 
 				if runtime.GOOS == "linux" {
 					// CMD: Linux specific top
 					fmt.Println("Linux")
-					top_out, top_err = exec.Command("top", "-bn1").Output()
+					topOut, topErr = exec.Command("top", "-bn1").Output()
 				} else {
 					// CMD: MacOS specific top
 					fmt.Println("MacOS")
-					top_out, top_err = exec.Command("top", "-l1").Output()
+					topOut, topErr = exec.Command("top", "-l1").Output()
 				}
 
-				if top_err != nil {
+				if topErr != nil {
 					fmt.Println("ERROR:", err)
 					log.Fatal(err)
 				}
 
-				s_top := string(top_out[:])
-				logOutput(tf, "TOP:", s_top)
+				sTop := string(topOut[:])
+				logOutput(tf, "TOP:", sTop)
 
 				if verbose {
 
 					// CMD: netstat -ta
-					netstat_out, netstat_err := exec.Command("netstat", "-ta").Output()
+					netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
 
-					if netstat_err != nil {
+					if netstatErr != nil {
 						fmt.Println("ERROR:", err)
 						log.Fatal(err)
 					}
 
-					s_netstat := string(netstat_out[:])
-					logOutput(tf, "NETSTAT:", s_netstat)
+					sNetstat := string(netstatOut[:])
+					logOutput(tf, "NETSTAT:", sNetstat)
 
 					// CMD: ps -ef
-					cmd_out, cmd_err := exec.Command("ps", "-ef").Output()
+					cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
 
-					if cmd_err != nil {
+					if cmdErr != nil {
 						fmt.Println("ERROR:", err)
 						log.Fatal(err)
 					}
 
-					s_cmd := string(cmd_out[:])
-					logOutput(tf, "PSEF:", s_cmd)
+					sCmd := string(cmdOut[:])
+					logOutput(tf, "PSEF:", sCmd)
 
 					// CMD: df -h
-					cmd_out, cmd_err = exec.Command("df", "-h").Output()
+					cmdOut, cmdErr = exec.Command("df", "-h").Output()
 
-					if cmd_err != nil {
+					if cmdErr != nil {
 						fmt.Println("ERROR:", err)
 						log.Fatal(err)
 					}
 
-					s_cmd = string(cmd_out[:])
-					logOutput(tf, "DFH:", s_cmd)
+					sCmd = string(cmdOut[:])
+					logOutput(tf, "DFH:", sCmd)
 
 					// CMD: ps
 					captureCommand(tf, "ps")
@@ -208,7 +207,7 @@ func main() {
 			}
 			break
 		}
-		fmt.Println("Sleep for:", time.Minute*sleep_interval)
-		time.Sleep(time.Minute * sleep_interval)
+		fmt.Println("Sleep for:", time.Minute*sleepInterval)
+		time.Sleep(time.Minute * sleepInterval)
 	}
 }
