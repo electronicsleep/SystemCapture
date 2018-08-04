@@ -119,7 +119,14 @@ func main() {
 			sLoad5 := strings.Split(s[load5], ".")
 			sLoad1 := strings.Split(s[load1], ".")
 			intLoad15, err := strconv.Atoi(sLoad15[0])
+			if err != nil {
+				fmt.Println("Conversion issue")
+			}
+
 			intLoad5, err := strconv.Atoi(sLoad5[0])
+			if err != nil {
+				fmt.Println("Conversion issue")
+			}
 			intLoad1, err := strconv.Atoi(sLoad1[0])
 			if err != nil {
 				fmt.Println("Conversion issue")
@@ -130,7 +137,7 @@ func main() {
 
 				// CMD: Top
 				var topOut []byte
-				var topErr error = nil
+				var topErr error
 
 				if runtime.GOOS == "linux" {
 					// CMD: Linux specific top
