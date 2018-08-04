@@ -13,4 +13,4 @@ WORKDIR /usr/src/app
 EXPOSE 5000
 
 #Run normally
-CMD ["./SystemCapture", "-v"]
+CMD ["./SystemCapture", "-v", "-t"]

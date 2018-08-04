@@ -21,8 +21,8 @@ import (
 // CPU threshold based on number of CPU cores
 var cpuCores = runtime.NumCPU()
 
-// CPU threshold manually set
-var threshold = 1
+// CPU threshold manually set [use -t] [set to -1 to always capture]
+var threshold = 0
 
 // Minutes to sleep between runs
 const sleepInterval time.Duration = 1
@@ -64,7 +64,7 @@ func logOutput(date string, cmd string, cmdOut string) {
 func main() {
 
 	verboseFlag := flag.Bool("v", false, "Verbose checks")
-	thresholdFlag := flag.Bool("t", false, "Set threshold instead of using CPU cores")
+	thresholdFlag := flag.Bool("t", false, "Set threshold manually")
 
 	flag.Parse()
 
@@ -120,16 +120,16 @@ func main() {
 			sLoad1 := strings.Split(s[load1], ".")
 			intLoad15, err := strconv.Atoi(sLoad15[0])
 			if err != nil {
-				fmt.Println("Conversion issue")
+				fmt.Println("Conversion issue load15")
 			}
 
 			intLoad5, err := strconv.Atoi(sLoad5[0])
 			if err != nil {
-				fmt.Println("Conversion issue")
+				fmt.Println("Conversion issue load5")
 			}
 			intLoad1, err := strconv.Atoi(sLoad1[0])
 			if err != nil {
-				fmt.Println("Conversion issue")
+				fmt.Println("Conversion issue load1")
 			}
 			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
