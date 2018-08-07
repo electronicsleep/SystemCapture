@@ -35,7 +35,7 @@ const topLines int = 25
 // Verbose: Check netstat, ps -ef, df -h, lsof, iostat
 var verbose = false
 
-// Webserver: Run webserver to show output
+// Webserver: Run webserver to show output (experimental)
 var webserver = false
 
 func captureCommand(tf string, cmd string) {
@@ -70,9 +70,7 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("logs"))
 	data, err := ioutil.ReadFile("./SystemCapture.log")
 	if err != nil {
-		//w.Write([]byte(err))
-		//FIXME
-		fmt.Println("ERROR")
+		fmt.Println("Error reading file")
 	}
 	if data != nil {
 		w.Write([]byte(data))
@@ -85,7 +83,6 @@ func runCapture() {
 	fmt.Println("--> Starting SystemCapture")
 	fmt.Println("Detect OS:", runtime.GOOS)
 	fmt.Println("CPU Cores:", runtime.NumCPU())
-	//for {
 
 	t := time.Now()
 	tf := t.Format("2006/01/02 15:04:05")
@@ -207,7 +204,6 @@ func runCapture() {
 	}
 	fmt.Println("Sleep for:", time.Minute*sleepInterval)
 	time.Sleep(time.Minute * sleepInterval)
-	//}
 }
 
 func main() {
