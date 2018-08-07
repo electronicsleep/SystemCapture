@@ -10,7 +10,7 @@ RUN apk update && apk add sysstat net-tools lsof procps
 ADD SystemCapture /usr/src/app
 
 WORKDIR /usr/src/app
-EXPOSE 5000
+EXPOSE 8080
 
 #Run normally
-CMD ["./SystemCapture", "-v", "-t"]
+CMD ["./SystemCapture", "-v", "-t", "-w"]
