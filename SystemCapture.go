@@ -1,6 +1,6 @@
 /*
 // Author: https://github.com/electronicsleep
-// Purpose: Golang application to capture system information when thresholds are reached
+// Purpose: Golang application to capture system info when thresholds are reached
 // Released under the BSD license
 */
 
@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-// CPU threshold based on number of CPU cores
+// CPU auto detect threshold based on number of CPU cores
 var cpuCores = runtime.NumCPU()
 
 // CPU threshold manually set [use -t] [set to -1 to always capture]
@@ -43,7 +43,7 @@ func captureCommand(tf string, cmd string) {
 	cmdOut, cmdErr := exec.Command(cmd).Output()
 
 	if cmdErr != nil {
-		fmt.Println("ERROR:")
+		fmt.Println("Error: cmd")
 		log.Fatal(cmdErr)
 	}
 	sCmd := string(cmdOut[:])
@@ -138,7 +138,7 @@ func runCapture() {
 			}
 
 			if topErr != nil {
-				fmt.Println("ERROR:", err)
+				fmt.Println("Error top: ", err)
 				log.Fatal(err)
 			}
 
@@ -151,7 +151,7 @@ func runCapture() {
 				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
 
 				if netstatErr != nil {
-					fmt.Println("ERROR:", err)
+					fmt.Println("Error netstat:", err)
 					log.Fatal(err)
 				}
 
@@ -162,7 +162,7 @@ func runCapture() {
 				cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
 
 				if cmdErr != nil {
-					fmt.Println("ERROR:", err)
+					fmt.Println("Error ps:", err)
 					log.Fatal(err)
 				}
 
@@ -173,7 +173,7 @@ func runCapture() {
 				cmdOut, cmdErr = exec.Command("df", "-h").Output()
 
 				if cmdErr != nil {
-					fmt.Println("ERROR:", err)
+					fmt.Println("Error df:", err)
 					log.Fatal(err)
 				}
 
