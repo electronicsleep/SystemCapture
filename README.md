@@ -6,6 +6,8 @@ Update with your own commands to capture info, search for CMD:
 
 Ever want to capture system info during a spike? This is for you.
 
+Useful for keeping an eye on processes running using CPU
+
 Threshold automatically set to the number of CPU cores on the system.
 
 **Checks:** w, top, vmstat, netstat -ta, ps -ef, df
