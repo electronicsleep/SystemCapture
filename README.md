@@ -8,7 +8,7 @@ Ever want to capture system info during a spike? This is for you.
 
 Useful for keeping an eye on processes running using CPU (similar to SAR report)
 
-Threshold automatically set to the number of CPU cores on the system.
+Threshold automatically set to the CPU cores on the system. (will only capture when load is high)
 
 **Checks:** w, top, vmstat, netstat -ta, ps -ef, df
 
