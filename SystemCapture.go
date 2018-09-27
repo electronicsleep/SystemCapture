@@ -67,7 +67,6 @@ func logOutput(date string, cmd string, cmdOut string) {
 }
 
 func httpLogs(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("logs"))
 	data, err := ioutil.ReadFile("./SystemCapture.log")
 	if err != nil {
 		fmt.Println("Error reading file")
@@ -78,12 +77,6 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func runCapture() {
-	// Starting SystemCapture
-	log.Println("--> Starting SystemCapture")
-	fmt.Println("--> Starting SystemCapture")
-	fmt.Println("Detect OS:", runtime.GOOS)
-	fmt.Println("CPU Cores:", runtime.NumCPU())
-
 	t := time.Now()
 	tf := t.Format("2006/01/02 15:04:05")
 
@@ -236,6 +229,13 @@ func main() {
 	}
 	defer f.Close()
 	log.SetOutput(f)
+
+	// Starting SystemCapture
+	log.Println("--> Starting SystemCapture")
+	fmt.Println("--> Starting SystemCapture")
+
+	fmt.Println("Detect OS:", runtime.GOOS)
+	fmt.Println("CPU Cores:", runtime.NumCPU())
 
 	if webserver {
 		go runCapture()
