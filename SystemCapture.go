@@ -24,7 +24,7 @@ import (
 var cpuCores = runtime.NumCPU()
 
 // CPU threshold manually set [use -t] [set to -1 to always capture]
-var threshold = 0
+var threshold = -1
 
 // Minutes to sleep between runs
 const sleepInterval time.Duration = 1
@@ -74,129 +74,132 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 	if data != nil {
 		w.Write([]byte(data))
 	}
+	w.Write([]byte("END:"))
 }
 
 func runCapture() {
-	t := time.Now()
-	tf := t.Format("2006/01/02 15:04:05")
+	for {
+		t := time.Now()
+		tf := t.Format("2006/01/02 15:04:05")
 
-	fmt.Println("--> Checking System: Load")
-	out, err := exec.Command("w").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("W: %s\n", out)
-	s := string(out[:])
-	lines := strings.Split(s, "\n")
-	for _, line := range lines {
-		log.Println("W: " + line)
-		s := strings.Split(line, " ")
-		itemsLen := len(s)
-		load15 := itemsLen - 1
-		load5 := itemsLen - 2
-		load1 := itemsLen - 3
-		fmt.Println("Threshold:", threshold)
-		sLoad15 := strings.Split(s[load15], ".")
-		sLoad5 := strings.Split(s[load5], ".")
-		sLoad1 := strings.Split(s[load1], ".")
-		intLoad15, err := strconv.Atoi(sLoad15[0])
+		fmt.Println("--> Checking System: Load")
+		out, err := exec.Command("w").Output()
 		if err != nil {
-			fmt.Println("Conversion issue load15")
+			log.Fatal(err)
 		}
-
-		intLoad5, err := strconv.Atoi(sLoad5[0])
-		if err != nil {
-			fmt.Println("Conversion issue load5")
-		}
-		intLoad1, err := strconv.Atoi(sLoad1[0])
-		if err != nil {
-			fmt.Println("Conversion issue load1")
-		}
-		fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
-		if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-			fmt.Println("Over threshold load5")
-
-			// CMD: Top
-			var topOut []byte
-			var topErr error
-
-			if runtime.GOOS == "linux" {
-				// CMD: Linux specific top
-				fmt.Println("Linux")
-				topOut, topErr = exec.Command("top", "-bn1").Output()
-			} else {
-				// CMD: MacOS specific top
-				fmt.Println("MacOS")
-				topOut, topErr = exec.Command("top", "-l1").Output()
+		fmt.Printf("W: %s\n", out)
+		s := string(out[:])
+		lines := strings.Split(s, "\n")
+		for _, line := range lines {
+			log.Println("W: " + line)
+			s := strings.Split(line, " ")
+			itemsLen := len(s)
+			load15 := itemsLen - 1
+			load5 := itemsLen - 2
+			load1 := itemsLen - 3
+			fmt.Println("Threshold:", threshold)
+			sLoad15 := strings.Split(s[load15], ".")
+			sLoad5 := strings.Split(s[load5], ".")
+			sLoad1 := strings.Split(s[load1], ".")
+			intLoad15, err := strconv.Atoi(sLoad15[0])
+			if err != nil {
+				fmt.Println("Conversion issue load15")
 			}
 
-			if topErr != nil {
-				fmt.Println("Error top: ", err)
-				log.Fatal(err)
+			intLoad5, err := strconv.Atoi(sLoad5[0])
+			if err != nil {
+				fmt.Println("Conversion issue load5")
 			}
+			intLoad1, err := strconv.Atoi(sLoad1[0])
+			if err != nil {
+				fmt.Println("Conversion issue load1")
+			}
+			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
+			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
+				fmt.Println("Over threshold load5")
 
-			sTop := string(topOut[:])
-			logOutput(tf, "TOP:", sTop)
+				// CMD: Top
+				var topOut []byte
+				var topErr error
 
-			if verbose {
-
-				// CMD: netstat -ta
-				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
-
-				if netstatErr != nil {
-					fmt.Println("Error netstat:", err)
-					log.Fatal(err)
-				}
-
-				sNetstat := string(netstatOut[:])
-				logOutput(tf, "NETSTAT:", sNetstat)
-
-				// CMD: ps -ef
-				cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
-
-				if cmdErr != nil {
-					fmt.Println("Error ps:", err)
-					log.Fatal(err)
-				}
-
-				sCmd := string(cmdOut[:])
-				logOutput(tf, "PSEF:", sCmd)
-
-				// CMD: df -h
-				cmdOut, cmdErr = exec.Command("df", "-h").Output()
-
-				if cmdErr != nil {
-					fmt.Println("Error df:", err)
-					log.Fatal(err)
-				}
-
-				sCmd = string(cmdOut[:])
-				logOutput(tf, "DFH:", sCmd)
-
-				// CMD: ps
-				captureCommand(tf, "ps")
-
-				// CMD: lsof
-				captureCommand(tf, "lsof")
-
-				// CMD: vmstat
 				if runtime.GOOS == "linux" {
-					captureCommand(tf, "vmstat")
+					// CMD: Linux specific top
+					fmt.Println("Linux")
+					topOut, topErr = exec.Command("top", "-bn1").Output()
 				} else {
-					captureCommand(tf, "vm_stat")
+					// CMD: MacOS specific top
+					fmt.Println("MacOS")
+					topOut, topErr = exec.Command("top", "-l1").Output()
 				}
 
-				// CMD: iostat
-				captureCommand(tf, "iostat")
-			}
+				if topErr != nil {
+					fmt.Println("Error top: ", err)
+					log.Fatal(err)
+				}
 
-		} else {
-			fmt.Println("--> System load: Ok")
+				sTop := string(topOut[:])
+				logOutput(tf, "TOP:", sTop)
+
+				if verbose {
+
+					// CMD: netstat -ta
+					netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
+
+					if netstatErr != nil {
+						fmt.Println("Error netstat:", err)
+						log.Fatal(err)
+					}
+
+					sNetstat := string(netstatOut[:])
+					logOutput(tf, "NETSTAT:", sNetstat)
+
+					// CMD: ps -ef
+					cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
+
+					if cmdErr != nil {
+						fmt.Println("Error ps:", err)
+						log.Fatal(err)
+					}
+
+					sCmd := string(cmdOut[:])
+					logOutput(tf, "PSEF:", sCmd)
+
+					// CMD: df -h
+					cmdOut, cmdErr = exec.Command("df", "-h").Output()
+
+					if cmdErr != nil {
+						fmt.Println("Error df:", err)
+						log.Fatal(err)
+					}
+
+					sCmd = string(cmdOut[:])
+					logOutput(tf, "DFH:", sCmd)
+
+					// CMD: ps
+					captureCommand(tf, "ps")
+
+					// CMD: lsof
+					captureCommand(tf, "lsof")
+
+					// CMD: vmstat
+					if runtime.GOOS == "linux" {
+						captureCommand(tf, "vmstat")
+					} else {
+						captureCommand(tf, "vm_stat")
+					}
+
+					// CMD: iostat
+					captureCommand(tf, "iostat")
+				}
+
+			} else {
+				fmt.Println("--> System load: Ok")
+			}
+			break
 		}
-		break
+		fmt.Println("Sleep for:", time.Minute*sleepInterval)
+		time.Sleep(time.Minute * sleepInterval)
 	}
-	fmt.Println("Sleep for:", time.Minute*sleepInterval)
-	time.Sleep(time.Minute * sleepInterval)
 }
 
 func main() {
@@ -239,17 +242,15 @@ func main() {
 
 	if webserver {
 		go runCapture()
-		fmt.Println("--> Running webserver on port 8080")
+		fmt.Println("--> Running webserver mode: http://localhost:8080/logs")
 		http.Handle("/", http.FileServer(http.Dir("./src")))
 		http.HandleFunc("/logs", httpLogs)
 		if err := http.ListenAndServe(":8080", nil); err != nil {
 			panic(err)
 		}
 	} else {
-		for {
-			fmt.Println("--> Running console mode")
-			runCapture()
-		}
+		fmt.Println("--> Running console mode")
+		runCapture()
 
 	}
 

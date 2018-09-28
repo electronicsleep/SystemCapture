@@ -12,5 +12,7 @@ ADD SystemCapture /usr/src/app
 WORKDIR /usr/src/app
 EXPOSE 8080
 
-#Run normally
-CMD ["./SystemCapture", "-v", "-t", "-w"]
+#Run Webserver mode
+CMD ["./SystemCapture", "-t", "-w"]
+#Run Console mode
+#CMD ["./SystemCapture", "-t"]
