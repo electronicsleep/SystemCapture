@@ -4,15 +4,15 @@ MAINTAINER Chris Robertson https://github.com/electronicsleep
 
 RUN mkdir -p /usr/src/app
 
-#For verbose commands
-RUN apk update && apk add sysstat net-tools lsof procps
+# For verbose commands
+RUN apk update && apk upgrade && apk add sysstat net-tools lsof procps
 
 ADD SystemCapture /usr/src/app
 
 WORKDIR /usr/src/app
 EXPOSE 8080
 
-#Run Webserver mode
+# Run Webserver mode
 CMD ["./SystemCapture", "-t", "-w"]
-#Run Console mode
-#CMD ["./SystemCapture", "-t"]
+# Run Console mode
+# CMD ["./SystemCapture", "-t"]
