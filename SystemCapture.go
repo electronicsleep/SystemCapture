@@ -228,7 +228,8 @@ func main() {
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		fmt.Println("Error opening file:")
+		fmt.Println("Error opening file")
+		os.Exit(1)
 	}
 	defer f.Close()
 	log.SetOutput(f)
