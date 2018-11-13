@@ -27,7 +27,7 @@ Should work on all Linux and MacOS versions.
 go run SystemCapture.go
 
 # Always capture
-go run SystemCapture.go -t -v
+go run SystemCapture.go -t
 
 # Build for Linux
 GOOS=linux go build SystemCapture.go
