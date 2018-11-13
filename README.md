@@ -29,6 +29,9 @@ go run SystemCapture.go
 # Always capture
 go run SystemCapture.go -t
 
+# Run with webserver on /logs
+go run SystemCapture.go -t -w
+
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
