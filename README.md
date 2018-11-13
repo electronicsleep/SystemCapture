@@ -24,21 +24,15 @@ Should work on all Linux and MacOS versions.
 
 ```
 # Build
-go build SystemCapture.go
+go run SystemCapture.go
+
+# Run verbose and manually set threshold
+go run SystemCapture.go -t -v
 
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
-# Run threshold is number of CPU cores
-go run SystemCapture.go
-
-# Run Verbose
-go run SystemCapture.go -v
-
-# Manually set threshold
-go run SystemCapture.go -t
-
-# Run in background
+# Run background
 nohup go run SystemCapture.go
 ```
 
