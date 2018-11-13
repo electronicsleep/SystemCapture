@@ -32,6 +32,9 @@ go run SystemCapture.go -t -v
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
+# Docker env: Alpine
+bash docker-start.sh
+
 # Run background
 nohup go run SystemCapture.go
 ```
