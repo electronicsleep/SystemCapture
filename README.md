@@ -29,7 +29,7 @@ go run SystemCapture.go
 # Always capture
 go run SystemCapture.go -t
 
-# Run with webserver on /logs
+# Run with webserver on http://localhost:8080/logs
 go run SystemCapture.go -t -w
 
 # Build for Linux
