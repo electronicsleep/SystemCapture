@@ -23,16 +23,16 @@ Tested/working with Debian Linux and MacOS Sierra.
 Should work on all Linux and MacOS versions.
 
 ```
-# Build
+# Run
 go run SystemCapture.go
 
-# Run verbose and manually set threshold
+# Always capture
 go run SystemCapture.go -t -v
 
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
-# Docker env: Alpine
+# Docker env Alpine
 bash docker-start.sh
 
 # Run background
