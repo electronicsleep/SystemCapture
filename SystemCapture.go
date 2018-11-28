@@ -78,7 +78,10 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func runCapture() {
+	loop := 0
 	for {
+		loop++
+		fmt.Println("Runtime: ", loop)
 		t := time.Now()
 		tf := t.Format("2006/01/02 15:04:05")
 
