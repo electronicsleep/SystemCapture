@@ -2,6 +2,11 @@
 
 Simple Golang application to capture system information when thresholds are reached.
 
+```
+# Quickly run for troubleshooting
+git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && ./SystemCapture-Linux
+```
+
 Update with your own commands to capture info, search for CMD:
 
 Ever want to capture system info during a spike? This is for you.
