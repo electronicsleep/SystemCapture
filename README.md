@@ -4,10 +4,10 @@ Simple Golang application to capture system information when thresholds are reac
 
 ```
 # Linux troubleshooting example
-git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && ./SystemCapture-Linux
+git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-Linux
 
 # MacOS troubleshooting example
-git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && ./SystemCapture-MacOS
+git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-MacOS
 ```
 
 Update with your own commands to capture info, search for CMD:
