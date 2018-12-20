@@ -43,7 +43,6 @@ func captureCommand(tf string, cmd string) {
 	cmdOut, cmdErr := exec.Command(cmd).Output()
 
 	if cmdErr != nil {
-		fmt.Println("Error: cmd")
 		log.Fatal("Error: cmd", cmdErr)
 	}
 	sCmd := string(cmdOut[:])
