@@ -44,7 +44,7 @@ func captureCommand(tf string, cmd string) {
 
 	if cmdErr != nil {
 		fmt.Println("Error: cmd")
-		log.Fatal(cmdErr)
+		log.Fatal("Error: cmd", cmdErr)
 	}
 	sCmd := string(cmdOut[:])
 	cmdU := strings.ToUpper(cmd)
@@ -77,6 +77,22 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("END:"))
 }
 
+func checkError(msg string, err error) {
+	if err != nil {
+		fmt.Println("Error: ", msg, err)
+		log.Println("Error: ", msg, err)
+	}
+}
+
+func checkFatal(msg string, err error) {
+	if err != nil {
+		fmt.Println("Fatal: " + msg, err)
+		log.Println("Fatal: " + msg, err)
+		log.Fatal()
+	}
+
+}
+
 func runCapture() {
 	loop := 0
 	for {
@@ -87,9 +103,7 @@ func runCapture() {
 
 		fmt.Println("--> Checking System: Load")
 		out, err := exec.Command("w").Output()
-		if err != nil {
-			log.Fatal(err)
-		}
+		checkFatal("invalid command w:", err)
 		fmt.Printf("W: %s\n", out)
 		s := string(out[:])
 		lines := strings.Split(s, "\n")
@@ -105,18 +119,11 @@ func runCapture() {
 			sLoad5 := strings.Split(s[load5], ".")
 			sLoad1 := strings.Split(s[load1], ".")
 			intLoad15, err := strconv.Atoi(sLoad15[0])
-			if err != nil {
-				fmt.Println("Conversion issue load15")
-			}
-
+			checkError("conversion issue load 15", err)
 			intLoad5, err := strconv.Atoi(sLoad5[0])
-			if err != nil {
-				fmt.Println("Conversion issue load5")
-			}
+			checkError("conversion issue load 5", err)
 			intLoad1, err := strconv.Atoi(sLoad1[0])
-			if err != nil {
-				fmt.Println("Conversion issue load1")
-			}
+			checkError("conversion issue load 1", err)
 			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
 				fmt.Println("Over threshold load5")
@@ -135,10 +142,7 @@ func runCapture() {
 					topOut, topErr = exec.Command("top", "-l1").Output()
 				}
 
-				if topErr != nil {
-					fmt.Println("Error top: ", err)
-					log.Fatal(err)
-				}
+				checkFatal("Error top:", topErr)
 
 				sTop := string(topOut[:])
 				logOutput(tf, "TOP:", sTop)
@@ -147,33 +151,21 @@ func runCapture() {
 
 					// CMD: netstat -ta
 					netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
-
-					if netstatErr != nil {
-						fmt.Println("Error netstat:", err)
-						log.Fatal(err)
-					}
+					checkFatal("Error netstat:", netstatErr)
 
 					sNetstat := string(netstatOut[:])
 					logOutput(tf, "NETSTAT:", sNetstat)
 
 					// CMD: ps -ef
 					cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
-
-					if cmdErr != nil {
-						fmt.Println("Error ps:", err)
-						log.Fatal(err)
-					}
+					checkFatal("Error ps:", cmdErr)
 
 					sCmd := string(cmdOut[:])
 					logOutput(tf, "PSEF:", sCmd)
 
 					// CMD: df -h
 					cmdOut, cmdErr = exec.Command("df", "-h").Output()
-
-					if cmdErr != nil {
-						fmt.Println("Error df:", err)
-						log.Fatal(err)
-					}
+					checkFatal("Error df:", cmdErr)
 
 					sCmd = string(cmdOut[:])
 					logOutput(tf, "DFH:", sCmd)
@@ -230,10 +222,8 @@ func main() {
 
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		fmt.Println("Error opening file")
-		os.Exit(1)
-	}
+	checkFatal("Error opening file", err)
+
 	defer f.Close()
 	log.SetOutput(f)
 
@@ -250,12 +240,11 @@ func main() {
 		http.Handle("/", http.FileServer(http.Dir("./src")))
 		http.HandleFunc("/logs", httpLogs)
 		if err := http.ListenAndServe(":8080", nil); err != nil {
-			panic(err)
+			checkFatal("error webserver: ", err)
 		}
 	} else {
 		fmt.Println("--> Running console mode")
 		runCapture()
-
 	}
 
 }
