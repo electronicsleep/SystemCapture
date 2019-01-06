@@ -1,11 +1,13 @@
 # System Capture
 
-Simple Golang application to capture system information when thresholds are reached.
+Simple Golang application to capture system details when thresholds are reached, good for troubleshooting.
 
 ```
 # Linux troubleshooting example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-Linux
+```
 
+```
 # MacOS troubleshooting example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-MacOS
 ```
