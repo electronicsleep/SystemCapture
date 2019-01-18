@@ -28,7 +28,7 @@ Using docker for tests.
 
 Raise threshold to desired level or use auto NumCPU option to log details.
 
-Tested/working with Debian Linux and MacOS Sierra.
+Tested with Ubuntu / Debian Linux and MacOS Sierra.
 
 Should work on all Linux and MacOS versions.
 
