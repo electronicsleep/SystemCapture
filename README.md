@@ -3,12 +3,12 @@
 Simple Golang application to capture system details when thresholds are reached, good for troubleshooting.
 
 ```
-# Linux troubleshooting example
+# Linux example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-Linux
 ```
 
 ```
-# MacOS troubleshooting example
+# MacOS example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-MacOS
 ```
 
