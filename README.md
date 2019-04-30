@@ -20,9 +20,9 @@ Useful for keeping an eye on processes running using CPU (similar to SAR report)
 
 Threshold automatically set to the CPU cores on the system. (will only capture when load is high)
 
-**Checks:** w, top, vmstat, netstat -ta, ps -ef, df
+**Checks:** w, top, netstat -ta, ps -ef, ps, df
 
-**Verbose Checks:** w, top, vmstat, netstat -ta, ps -ef, lsof, iostat, df
+**Verbose Checks:** regular checks + vmstat, lsof, iostat
 
 Using docker for tests.
 

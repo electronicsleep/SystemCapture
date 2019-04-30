@@ -30,9 +30,9 @@ var threshold = -1
 const sleepInterval time.Duration = 1
 
 // Number of top lines to capture
-const topLines int = 25
+const topLines int = 50
 
-// Verbose: Check netstat, ps -ef, df -h, lsof, iostat
+// Verbose: Check vmstat, lsof, iostat
 var verbose = false
 
 // Webserver: Run webserver to show output (experimental)
@@ -85,8 +85,8 @@ func checkError(msg string, err error) {
 
 func checkFatal(msg string, err error) {
 	if err != nil {
-		fmt.Println("Fatal: " + msg, err)
-		log.Println("Fatal: " + msg, err)
+		fmt.Println("Fatal: "+msg, err)
+		log.Println("Fatal: "+msg, err)
 		log.Fatal()
 	}
 
@@ -125,7 +125,8 @@ func runCapture() {
 			checkError("conversion issue load 1", err)
 			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				fmt.Println("Over threshold load5")
+				fmt.Println("Load over threshold:")
+				log.Println("Load over threshold:")
 
 				// CMD: Top
 				var topOut []byte
@@ -146,32 +147,31 @@ func runCapture() {
 				sTop := string(topOut[:])
 				logOutput(tf, "TOP:", sTop)
 
+				// CMD: netstat -ta
+				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
+				checkFatal("Error netstat:", netstatErr)
+
+				sNetstat := string(netstatOut[:])
+				logOutput(tf, "NETSTAT:", sNetstat)
+
+				// CMD: ps -ef
+				cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
+				checkFatal("Error ps:", cmdErr)
+
+				// CMD: ps
+				captureCommand(tf, "ps")
+
+				sCmd := string(cmdOut[:])
+				logOutput(tf, "PSEF:", sCmd)
+
+				// CMD: df -h
+				cmdOut, cmdErr = exec.Command("df", "-h").Output()
+				checkFatal("Error df:", cmdErr)
+
+				sCmd = string(cmdOut[:])
+				logOutput(tf, "DFH:", sCmd)
+
 				if verbose {
-
-					// CMD: netstat -ta
-					netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
-					checkFatal("Error netstat:", netstatErr)
-
-					sNetstat := string(netstatOut[:])
-					logOutput(tf, "NETSTAT:", sNetstat)
-
-					// CMD: ps -ef
-					cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
-					checkFatal("Error ps:", cmdErr)
-
-					sCmd := string(cmdOut[:])
-					logOutput(tf, "PSEF:", sCmd)
-
-					// CMD: df -h
-					cmdOut, cmdErr = exec.Command("df", "-h").Output()
-					checkFatal("Error df:", cmdErr)
-
-					sCmd = string(cmdOut[:])
-					logOutput(tf, "DFH:", sCmd)
-
-					// CMD: ps
-					captureCommand(tf, "ps")
-
 					// CMD: lsof
 					captureCommand(tf, "lsof")
 
