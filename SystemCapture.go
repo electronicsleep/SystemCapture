@@ -29,9 +29,6 @@ var threshold = -1
 // Minutes to sleep between runs
 const sleepInterval time.Duration = 1
 
-// Number of top lines to capture
-const topLines int = 50
-
 // Verbose: Check vmstat, lsof, iostat
 var verbose = false
 
@@ -59,9 +56,6 @@ func logOutput(date string, cmd string, cmdOut string) {
 		lineNum++
 		fmt.Println(date, cmd, lineCmd)
 		log.Println(cmd, lineCmd)
-		if lineNum == topLines {
-			break
-		}
 	}
 }
 
@@ -143,33 +137,26 @@ func runCapture() {
 				}
 
 				checkFatal("Error top:", topErr)
-
 				sTop := string(topOut[:])
 				logOutput(tf, "TOP:", sTop)
 
 				// CMD: netstat -ta
 				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
 				checkFatal("Error netstat:", netstatErr)
-
 				sNetstat := string(netstatOut[:])
 				logOutput(tf, "NETSTAT:", sNetstat)
 
-				// CMD: ps -ef
-				cmdOut, cmdErr := exec.Command("ps", "-ef").Output()
-				checkFatal("Error ps:", cmdErr)
-
-				// CMD: ps
-				captureCommand(tf, "ps")
-
-				sCmd := string(cmdOut[:])
-				logOutput(tf, "PSEF:", sCmd)
+				// CMD: ps aux
+				psOut, psErr := exec.Command("ps", "aux").Output()
+				checkFatal("Error ps:", psErr)
+				sPS := string(psOut[:])
+				logOutput(tf, "PS:", sPS)
 
 				// CMD: df -h
-				cmdOut, cmdErr = exec.Command("df", "-h").Output()
-				checkFatal("Error df:", cmdErr)
-
-				sCmd = string(cmdOut[:])
-				logOutput(tf, "DFH:", sCmd)
+				dfOut, dfErr := exec.Command("df", "-h").Output()
+				checkFatal("Error df:", dfErr)
+				sDF := string(dfOut[:])
+				logOutput(tf, "DFH:", sDF)
 
 				if verbose {
 					// CMD: lsof
