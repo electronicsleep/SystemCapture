@@ -1,6 +1,8 @@
 # System Capture
 
-Simple Golang application to capture system details when thresholds are reached, good for troubleshooting.
+SystemCapture - Go app to capture sysinfo on MacOS/Linux
+
+Go app to capture system details when thresholds are reached, good for troubleshooting.
 
 ```
 # Linux example
