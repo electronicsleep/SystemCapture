@@ -4,6 +4,10 @@ SystemCapture - Go app to capture sysinfo on MacOS/Linux
 
 Go app to capture system details when thresholds are reached, good for troubleshooting.
 
+**Checks:** w, top, netstat -ta, ps -ef, ps, df
+
+**Verbose Checks:** regular checks + vmstat, lsof, iostat
+
 ```
 # Linux example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture/bin && nohup ./SystemCapture-Linux
@@ -22,17 +26,13 @@ Useful for keeping an eye on processes running using CPU (similar to SAR report)
 
 Threshold automatically set to the CPU cores on the system. (will only capture when load is high)
 
-**Checks:** w, top, netstat -ta, ps -ef, ps, df
+Using docker for testing/verifying Linux
 
-**Verbose Checks:** regular checks + vmstat, lsof, iostat
-
-Using docker for tests.
-
-Raise threshold to desired level or use auto NumCPU option to log details.
+Raise threshold to desired level or use auto NumCPU option to use defaults to log details.
 
 Tested with Ubuntu / Debian Linux and MacOS Sierra.
 
-Should work on all Linux and MacOS versions.
+Should work on all Linux and MacOS versions, if you find any issues let me know.
 
 ```
 # Run
