@@ -29,6 +29,9 @@ bash docker-run.sh
 
 # Run background
 nohup go run SystemCapture.go
+
+# Example
+git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture && go run SystemCapture.go
 ```
 
 Update with your own commands to capture info, search for CMD:
