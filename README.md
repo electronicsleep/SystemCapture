@@ -2,7 +2,9 @@
 
 SystemCapture - Go app to capture sysinfo on MacOS/Linux
 
-Go app to capture system details when thresholds are reached, good for troubleshooting.
+Capture system details when thresholds are reached, good for troubleshooting.
+
+Default will set threshold to number of cpu cores
 
 ```
 # Run
@@ -11,9 +13,9 @@ go run SystemCapture.go
 # Set CPU threshold to 4
 go run SystemCapture.go -t 4
 
-# Run with webserver:
+# Run with webserver and verbose:
 # http://localhost:8080/logs
-go run SystemCapture.go -t 4 -w
+go run SystemCapture.go -t 4 -w -v
 
 # Build for Linux
 GOOS=linux go build SystemCapture.go
