@@ -4,6 +4,27 @@ SystemCapture - Go app to capture sysinfo on MacOS/Linux
 
 Go app to capture system details when thresholds are reached, good for troubleshooting.
 
+```
+# Run
+go run SystemCapture.go
+
+# Set CPU threshold to 4
+go run SystemCapture.go -t 4
+
+# Run with webserver:
+# http://localhost:8080/logs
+go run SystemCapture.go -t 4 -w
+
+# Build for Linux
+GOOS=linux go build SystemCapture.go
+
+# Docker env Alpine
+bash docker-run.sh
+
+# Run background
+nohup go run SystemCapture.go
+```
+
 **Checks:** w, top, netstat -ta, ps -ef, ps, df
 
 **Verbose Checks:** regular checks + vmstat, lsof, iostat
@@ -33,27 +54,6 @@ Raise threshold to desired level or use auto NumCPU option to use defaults to lo
 Tested with Ubuntu / Debian Linux and MacOS Sierra.
 
 Should work on all Linux and MacOS versions, if you find any issues let me know.
-
-```
-# Run
-go run SystemCapture.go
-
-# Always capture
-go run SystemCapture.go -t
-
-# Run with webserver:
-# http://localhost:8080/logs
-go run SystemCapture.go -t -w
-
-# Build for Linux
-GOOS=linux go build SystemCapture.go
-
-# Docker env Alpine
-bash docker-start.sh
-
-# Run background
-nohup go run SystemCapture.go
-```
 
 # Resources
 

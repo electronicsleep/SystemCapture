@@ -1,6 +1,6 @@
 /*
 // Author: https://github.com/electronicsleep
-// Purpose: Golang application to capture system info when thresholds are reached
+// Purpose: Golang application to capture system info when CPU thresholds is reached
 // Released under the BSD license
 */
 
@@ -20,11 +20,11 @@ import (
 	"time"
 )
 
-// CPU auto detect threshold based on number of CPU cores
+// CPU auto detect CPU threshold based on number of CPU cores
 var cpuCores = runtime.NumCPU()
 
-// CPU threshold manually set [use -t] [set to -1 to always capture]
-var threshold = -1
+// CPU threshold manually set [use -t] [set to 0 to always capture]
+var threshold = 0
 
 // Minutes to sleep between runs
 const sleepInterval time.Duration = 1
@@ -119,8 +119,9 @@ func runCapture() {
 			checkError("conversion issue load 1", err)
 			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				fmt.Println("Load over threshold:")
-				log.Println("Load over threshold:")
+				fmt.Println("Load over threshold: Running checks")
+				log.Println("Load over threshold: Running checks")
+				time.Sleep(3 * time.Second)
 
 				// CMD: Top
 				var topOut []byte
@@ -178,7 +179,7 @@ func runCapture() {
 			}
 			break
 		}
-		fmt.Println("Sleep for:", time.Minute*sleepInterval)
+		fmt.Println("Checking again in:", time.Minute*sleepInterval)
 		time.Sleep(time.Minute * sleepInterval)
 	}
 }
@@ -186,7 +187,7 @@ func runCapture() {
 func main() {
 
 	verboseFlag := flag.Bool("v", false, "Verbose checks")
-	thresholdFlag := flag.Bool("t", false, "Set threshold manually")
+	thresholdFlag := flag.Int("t", 0, "Set CPU threshold manually")
 	webserverFlag := flag.Bool("w", false, "Run webserver")
 
 	flag.Parse()
@@ -195,11 +196,13 @@ func main() {
 	webserver = *webserverFlag
 	thresholdFlagSet := *thresholdFlag
 
-	if thresholdFlagSet == false {
+	fmt.Println("threshold", thresholdFlagSet)
+	if thresholdFlagSet == 0 {
 		fmt.Println("Setting threshold to numCPU")
 		threshold = cpuCores
 	} else {
 		fmt.Println("Using manually set threshold")
+		threshold = thresholdFlagSet
 	}
 
 	fmt.Println("Verbose:", verbose)
