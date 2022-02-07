@@ -2,13 +2,13 @@
 
 SystemCapture - Go app to capture sysinfo on MacOS/Linux
 
-Capture system details when thresholds are reached, good for troubleshooting
+Capture system details when thresholds are reached good for troubleshooting
 
-Default will set threshold to number of cpu cores
+Default will set threshold to number of CPU cores
 
-**Checks:** w, top, netstat -ta, ps -ef, ps, df
+**Regular Checks:** w, top, netstat -ta, ps -ef, ps, df
 
-**Verbose Checks:** regular checks + vmstat, lsof, iostat
+**Verbose Checks:** Regular Checks + vmstat, lsof, iostat
 
 ```
 # Run

@@ -90,37 +90,37 @@ func runCapture() {
 	loop := 0
 	for {
 		loop++
-		fmt.Println("Runtime: ", loop)
+		fmt.Println("INFO: Runtime: ", loop, "minutes")
 		t := time.Now()
 		tf := t.Format("2006/01/02 15:04:05")
 
-		fmt.Println("--> Checking System: Load")
+		fmt.Println("INFO: Checking System: Load")
 		out, err := exec.Command("w").Output()
 		checkFatal("invalid command w:", err)
-		fmt.Printf("W: %s\n", out)
+		fmt.Printf("INFO: W: %s\n", out)
 		s := string(out[:])
 		lines := strings.Split(s, "\n")
 		for _, line := range lines {
-			log.Println("W: " + line)
+			log.Println("INFO: W: " + line)
 			s := strings.Split(line, " ")
 			itemsLen := len(s)
 			load15 := itemsLen - 1
 			load5 := itemsLen - 2
 			load1 := itemsLen - 3
-			fmt.Println("Threshold:", threshold)
+			fmt.Println("INFO: Threshold:", threshold)
 			sLoad15 := strings.Split(s[load15], ".")
 			sLoad5 := strings.Split(s[load5], ".")
 			sLoad1 := strings.Split(s[load1], ".")
 			intLoad15, err := strconv.Atoi(sLoad15[0])
-			checkError("conversion issue load 15", err)
+			checkError("ERROR: conversion issue load 15", err)
 			intLoad5, err := strconv.Atoi(sLoad5[0])
-			checkError("conversion issue load 5", err)
+			checkError("ERROR: conversion issue load 5", err)
 			intLoad1, err := strconv.Atoi(sLoad1[0])
-			checkError("conversion issue load 1", err)
-			fmt.Println("Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
+			checkError("ERROR: conversion issue load 1", err)
+			fmt.Println("INFO: Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				fmt.Println("Load over threshold: Running checks")
-				log.Println("Load over threshold: Running checks")
+				fmt.Println("INFO: Load over threshold: Running checks")
+				log.Println("INFO: Load over threshold: Running checks")
 				time.Sleep(3 * time.Second)
 
 				// CMD: Top
@@ -129,15 +129,15 @@ func runCapture() {
 
 				if runtime.GOOS == "linux" {
 					// CMD: Linux specific top
-					fmt.Println("Linux")
+					fmt.Println("INFO: OS: Linux")
 					topOut, topErr = exec.Command("top", "-bn1").Output()
 				} else {
 					// CMD: MacOS specific top
-					fmt.Println("MacOS")
+					fmt.Println("INFO: OS: MacOS")
 					topOut, topErr = exec.Command("top", "-l1").Output()
 				}
 
-				checkFatal("Error top:", topErr)
+				checkFatal("ERROR: top:", topErr)
 				sTop := string(topOut[:])
 				logOutput(tf, "TOP:", sTop)
 
@@ -175,16 +175,18 @@ func runCapture() {
 				}
 
 			} else {
-				fmt.Println("--> System load: Ok")
+				fmt.Println("INFO: System load: Ok")
 			}
 			break
 		}
-		fmt.Println("Checking again in:", time.Minute*sleepInterval)
+		fmt.Println("INFO: Checking again in:", time.Minute*sleepInterval)
 		time.Sleep(time.Minute * sleepInterval)
 	}
 }
 
 func main() {
+	//log.Println("INFO: Starting SystemCapture")
+	fmt.Println("INFO: Starting SystemCapture")
 
 	verboseFlag := flag.Bool("v", false, "Verbose checks")
 	thresholdFlag := flag.Int("t", 0, "Set CPU threshold manually")
@@ -196,18 +198,19 @@ func main() {
 	webserver = *webserverFlag
 	thresholdFlagSet := *thresholdFlag
 
-	fmt.Println("threshold", thresholdFlagSet)
 	if thresholdFlagSet == 0 {
-		fmt.Println("Setting threshold to numCPU")
+		fmt.Println("INFO: Setting threshold to numCPU")
 		threshold = cpuCores
 	} else {
-		fmt.Println("Using manually set threshold")
+		fmt.Println("INFO: Using flag set threshold")
 		threshold = thresholdFlagSet
 	}
 
-	fmt.Println("Verbose:", verbose)
-	fmt.Println("Webserver:", webserver)
-	fmt.Println("Threshold:", threshold)
+	if verbose {
+		fmt.Println("INFO: Verbose:", verbose)
+		fmt.Println("INFO: Webserver:", webserver)
+		fmt.Println("INFO: Threshold:", threshold)
+	}
 
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -216,23 +219,19 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 
-	// Starting SystemCapture
-	log.Println("--> Starting SystemCapture")
-	fmt.Println("--> Starting SystemCapture")
-
-	fmt.Println("Detect OS:", runtime.GOOS)
-	fmt.Println("CPU Cores:", runtime.NumCPU())
+	fmt.Println("INFO: Detect OS:", runtime.GOOS)
+	fmt.Println("INFO: CPU Cores:", runtime.NumCPU())
 
 	if webserver {
 		go runCapture()
-		fmt.Println("--> Running webserver mode: http://localhost:8080/logs")
+		fmt.Println("INFO: Running webserver mode: http://localhost:8080/logs")
 		http.Handle("/", http.FileServer(http.Dir("./src")))
 		http.HandleFunc("/logs", httpLogs)
 		if err := http.ListenAndServe(":8080", nil); err != nil {
 			checkFatal("error webserver: ", err)
 		}
 	} else {
-		fmt.Println("--> Running console mode")
+		fmt.Println("INFO: Running console mode")
 		runCapture()
 	}
 
