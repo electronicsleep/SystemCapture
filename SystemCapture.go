@@ -40,7 +40,7 @@ func captureCommand(tf string, cmd string) {
 	cmdOut, cmdErr := exec.Command(cmd).Output()
 
 	if cmdErr != nil {
-		log.Fatal("Error: cmd", cmdErr)
+		log.Fatal("ERROR: cmd", cmdErr)
 	}
 	sCmd := string(cmdOut[:])
 	cmdU := strings.ToUpper(cmd)
@@ -62,7 +62,7 @@ func logOutput(date string, cmd string, cmdOut string) {
 func httpLogs(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadFile("./SystemCapture.log")
 	if err != nil {
-		fmt.Println("Error reading file")
+		fmt.Println("ERROR: reading file")
 	}
 	if data != nil {
 		w.Write([]byte(data))
@@ -72,8 +72,8 @@ func httpLogs(w http.ResponseWriter, r *http.Request) {
 
 func checkError(msg string, err error) {
 	if err != nil {
-		fmt.Println("Error: ", msg, err)
-		log.Println("Error: ", msg, err)
+		fmt.Println("ERROR: ", msg, err)
+		log.Println("ERROR: ", msg, err)
 	}
 }
 
@@ -90,7 +90,7 @@ func runCapture() {
 	loop := 0
 	for {
 		loop++
-		fmt.Println("INFO: Runtime: ", loop, "minutes")
+		fmt.Println("INFO: Runtime:", loop, "minutes")
 		t := time.Now()
 		tf := t.Format("2006/01/02 15:04:05")
 
@@ -143,19 +143,19 @@ func runCapture() {
 
 				// CMD: netstat -ta
 				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
-				checkFatal("Error netstat:", netstatErr)
+				checkFatal("ERROR: netstat:", netstatErr)
 				sNetstat := string(netstatOut[:])
 				logOutput(tf, "NETSTAT:", sNetstat)
 
 				// CMD: ps aux
 				psOut, psErr := exec.Command("ps", "aux").Output()
-				checkFatal("Error ps:", psErr)
+				checkFatal("ERROR: ps:", psErr)
 				sPS := string(psOut[:])
 				logOutput(tf, "PS:", sPS)
 
 				// CMD: df -h
 				dfOut, dfErr := exec.Command("df", "-h").Output()
-				checkFatal("Error df:", dfErr)
+				checkFatal("ERROR: df:", dfErr)
 				sDF := string(dfOut[:])
 				logOutput(tf, "DFH:", sDF)
 
@@ -185,7 +185,6 @@ func runCapture() {
 }
 
 func main() {
-	//log.Println("INFO: Starting SystemCapture")
 	fmt.Println("INFO: Starting SystemCapture")
 
 	verboseFlag := flag.Bool("v", false, "Verbose checks")
@@ -214,7 +213,7 @@ func main() {
 
 	// Start logging
 	f, err := os.OpenFile("SystemCapture.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	checkFatal("Error opening file", err)
+	checkFatal("ERROR: opening file", err)
 
 	defer f.Close()
 	log.SetOutput(f)
