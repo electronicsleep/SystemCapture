@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+mkdir bin
+set -ex
 echo "Building for Linux and MacOS"
 gofmt -w SystemCapture.go
 GOOS=linux go build SystemCapture.go
