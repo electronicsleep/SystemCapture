@@ -17,6 +17,9 @@ go run SystemCapture.go
 # Set CPU threshold to 4
 go run SystemCapture.go -t 4
 
+# Set threshold -1 to always capture
+go run SystemCapture.go -t -1
+
 # Run with webserver and verbose:
 # http://localhost:8080/logs
 go run SystemCapture.go -t 4 -w -v

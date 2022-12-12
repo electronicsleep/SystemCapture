@@ -23,8 +23,8 @@ import (
 // CPU auto detect CPU threshold based on number of CPU cores
 var cpuCores = runtime.NumCPU()
 
-// CPU threshold manually set [use -t] [set to 0 to always capture]
-var threshold = 0
+// CPU threshold manually set [use -t] [set to -1 to always capture]
+var threshold = -1
 
 // Minutes to sleep between runs
 const sleepInterval time.Duration = 1

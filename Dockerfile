@@ -13,6 +13,6 @@ WORKDIR /usr/src/app
 EXPOSE 8080
 
 # Run Webserver mode
-CMD ["./SystemCapture", "-t", "-w"]
+# CMD ["./SystemCapture", "-t", "1", "-w"]
 # Run Console mode
-# CMD ["./SystemCapture", "-t"]
+CMD ["./SystemCapture", "-t", "-1"]
