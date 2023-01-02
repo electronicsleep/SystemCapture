@@ -1,7 +1,7 @@
 build:
 	go fmt .; go build -o sc
 
-run:
+test: build
 	./sc -t -1
 
 install:
