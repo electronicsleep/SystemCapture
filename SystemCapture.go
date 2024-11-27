@@ -7,6 +7,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -18,6 +19,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 // CPU auto detect CPU threshold based on number of CPU cores
@@ -34,6 +37,39 @@ var verbose = false
 
 // Webserver: Run webserver to show output (experimental)
 var webserver = false
+
+type configStruct struct {
+	SlackURL string   `yaml:"slack_url"`
+	Email    string   `yaml:"email"`
+	Servers  []string `yaml:"servers"`
+}
+
+type stateStruct struct {
+	Hostname string
+}
+
+func (config *configStruct) getConfig() *configStruct {
+
+	yamlFile, err := os.ReadFile("config.yaml")
+	if err != nil {
+		log.Printf("ERROR: YAML file not found #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, config)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+	}
+	return config
+}
+
+func (state *stateStruct) setState() *stateStruct {
+	hostname, err := os.Hostname()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		state.Hostname = hostname
+	}
+	return state
+}
 
 func captureCommand(tf string, cmd string) {
 
@@ -120,6 +156,9 @@ func runCapture() {
 			fmt.Println("INFO: Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
 				fmt.Println("INFO: Load over threshold: Running checks")
+				var state stateStruct
+				state.setState()
+				sendMessage("INFO: Host load over threshold: Hostname: " + state.Hostname)
 				log.Println("INFO: Load over threshold: Running checks")
 				time.Sleep(3 * time.Second)
 
@@ -184,6 +223,44 @@ func runCapture() {
 	}
 }
 
+func sendMessage(send_text string) {
+	var config configStruct
+	config.getConfig()
+	fmt.Println(config)
+	if config.SlackURL != "" {
+		fmt.Println("INFO: SlackURL is set, sending message")
+		postSlack(send_text)
+	} else {
+		fmt.Println("INFO: SlackURL is not set, no messages will be sent")
+	}
+}
+
+func postSlack(send_text string) {
+	fmt.Println("INFO: postSlack:", send_text)
+
+	var config configStruct
+	config.getConfig()
+
+	var jsonData = []byte(`{
+                "text": "` + send_text + `",
+        }`)
+
+	request, error := http.NewRequest("POST", config.SlackURL, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	client := &http.Client{}
+	response, error := client.Do(request)
+	if error != nil {
+		panic(error)
+	}
+	defer response.Body.Close()
+
+	fmt.Println("INFO: response Status:", response.Status)
+	fmt.Println("INFO: response Headers:", response.Header)
+	body, _ := ioutil.ReadAll(response.Body)
+	fmt.Println("INFO: response Body:", string(body))
+}
+
 func main() {
 	fmt.Println("INFO: Starting SystemCapture")
 
@@ -192,6 +269,14 @@ func main() {
 	webserverFlag := flag.Bool("w", false, "Run webserver")
 
 	flag.Parse()
+
+	var state stateStruct
+	state.setState()
+	fmt.Println("INFO: Hostname: " + state.Hostname)
+	sendMessage("INFO: Starting SystemCapture on hostname: " + state.Hostname)
+
+	var config configStruct
+	config.getConfig()
 
 	verbose = *verboseFlag
 	webserver = *webserverFlag
@@ -233,5 +318,4 @@ func main() {
 		fmt.Println("INFO: Running console mode")
 		runCapture()
 	}
-
 }
