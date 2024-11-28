@@ -40,6 +40,7 @@ var webserver = false
 
 type configStruct struct {
 	SlackURL string   `yaml:"slack_url"`
+	SlackMsg string   `yaml:"slack_msg"`
 	Email    string   `yaml:"email"`
 	Servers  []string `yaml:"servers"`
 }
@@ -122,7 +123,7 @@ func checkFatal(msg string, err error) {
 
 }
 
-func runCapture() {
+func runCapture(state stateStruct) {
 	loop := 0
 	for {
 		loop++
@@ -155,10 +156,7 @@ func runCapture() {
 			checkError("ERROR: conversion issue load 1", err)
 			fmt.Println("INFO: Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				fmt.Println("INFO: Load over threshold: Running checks")
-				var state stateStruct
-				state.setState()
-				sendMessage("INFO: Host load over threshold: Hostname: " + state.Hostname)
+				sendMessage("INFO: Load over threshold: Hostname" + state.Hostname)
 				log.Println("INFO: Load over threshold: Running checks")
 				time.Sleep(3 * time.Second)
 
@@ -226,7 +224,6 @@ func runCapture() {
 func sendMessage(send_text string) {
 	var config configStruct
 	config.getConfig()
-	fmt.Println(config)
 	if config.SlackURL != "" {
 		fmt.Println("INFO: SlackURL is set, sending message")
 		postSlack(send_text)
@@ -235,11 +232,12 @@ func sendMessage(send_text string) {
 	}
 }
 
-func postSlack(send_text string) {
-	fmt.Println("INFO: postSlack:", send_text)
+func postSlack(message string) {
+	fmt.Println("INFO: postSlack:" + message)
 
 	var config configStruct
 	config.getConfig()
+	send_text := message + ": " + config.SlackMsg
 
 	var jsonData = []byte(`{
                 "text": "` + send_text + `",
@@ -307,7 +305,7 @@ func main() {
 	fmt.Println("INFO: CPU Cores:", runtime.NumCPU())
 
 	if webserver {
-		go runCapture()
+		go runCapture(state)
 		fmt.Println("INFO: Running webserver mode: http://localhost:8080/logs")
 		http.Handle("/", http.FileServer(http.Dir("./src")))
 		http.HandleFunc("/logs", httpLogs)
@@ -316,6 +314,6 @@ func main() {
 		}
 	} else {
 		fmt.Println("INFO: Running console mode")
-		runCapture()
+		runCapture(state)
 	}
 }
