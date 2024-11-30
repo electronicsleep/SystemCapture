@@ -41,8 +41,7 @@ var webserver = false
 type configStruct struct {
 	SlackURL string   `yaml:"slack_url"`
 	SlackMsg string   `yaml:"slack_msg"`
-	Email    string   `yaml:"email"`
-	Servers  []string `yaml:"servers"`
+	Commands []string `yaml:"commands"`
 }
 
 type stateStruct struct {
@@ -73,10 +72,9 @@ func (state *stateStruct) setState() *stateStruct {
 }
 
 func captureCommand(tf string, cmd string) {
-
-	cmdOut, cmdErr := exec.Command(cmd).Output()
-
+	cmdOut, cmdErr := exec.Command("bash", "-c", cmd).Output()
 	if cmdErr != nil {
+		fmt.Println("ERROR: cmd", cmdErr)
 		log.Fatal("ERROR: cmd", cmdErr)
 	}
 	sCmd := string(cmdOut[:])
@@ -85,7 +83,6 @@ func captureCommand(tf string, cmd string) {
 }
 
 func logOutput(date string, cmd string, cmdOut string) {
-
 	sCmd := string(cmdOut[:])
 	linesCmd := strings.Split(sCmd, "\n")
 	lineNum := 0
@@ -123,7 +120,7 @@ func checkFatal(msg string, err error) {
 
 }
 
-func runCapture(state stateStruct) {
+func runCapture(state stateStruct, config configStruct) {
 	loop := 0
 	for {
 		loop++
@@ -156,45 +153,28 @@ func runCapture(state stateStruct) {
 			checkError("ERROR: conversion issue load 1", err)
 			fmt.Println("INFO: Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				sendMessage("INFO: Load over threshold: Hostname" + state.Hostname)
+				sendMessage("INFO: Load over threshold: Hostname: " + state.Hostname)
 				log.Println("INFO: Load over threshold: Running checks")
 				time.Sleep(3 * time.Second)
-
-				// CMD: Top
-				var topOut []byte
-				var topErr error
 
 				if runtime.GOOS == "linux" {
 					// CMD: Linux specific top
 					fmt.Println("INFO: OS: Linux")
-					topOut, topErr = exec.Command("top", "-bn1").Output()
+					captureCommand(tf, "top -bn1")
 				} else {
 					// CMD: MacOS specific top
 					fmt.Println("INFO: OS: MacOS")
-					topOut, topErr = exec.Command("top", "-l1").Output()
+					captureCommand(tf, "top -l1")
 				}
 
-				checkFatal("ERROR: top:", topErr)
-				sTop := string(topOut[:])
-				logOutput(tf, "TOP:", sTop)
-
 				// CMD: netstat -ta
-				netstatOut, netstatErr := exec.Command("netstat", "-ta").Output()
-				checkFatal("ERROR: netstat:", netstatErr)
-				sNetstat := string(netstatOut[:])
-				logOutput(tf, "NETSTAT:", sNetstat)
+				captureCommand(tf, "netstat -ta")
 
 				// CMD: ps aux
-				psOut, psErr := exec.Command("ps", "aux").Output()
-				checkFatal("ERROR: ps:", psErr)
-				sPS := string(psOut[:])
-				logOutput(tf, "PS:", sPS)
+				captureCommand(tf, "ps aux")
 
 				// CMD: df -h
-				dfOut, dfErr := exec.Command("df", "-h").Output()
-				checkFatal("ERROR: df:", dfErr)
-				sDF := string(dfOut[:])
-				logOutput(tf, "DFH:", sDF)
+				captureCommand(tf, "df -h")
 
 				if verbose {
 					// CMD: lsof
@@ -211,6 +191,14 @@ func runCapture(state stateStruct) {
 					captureCommand(tf, "iostat")
 				}
 
+				fmt.Println("INFO: Config: User defined Commands")
+				fmt.Println(config)
+				for idx, cmd := range config.Commands {
+					line := fmt.Sprintf("User Command: %d: "+cmd, idx)
+					fmt.Println(line)
+					captureCommand(tf, cmd)
+				}
+
 			} else {
 				fmt.Println("INFO: System load: Ok")
 			}
@@ -225,10 +213,10 @@ func sendMessage(send_text string) {
 	var config configStruct
 	config.getConfig()
 	if config.SlackURL != "" {
-		fmt.Println("INFO: SlackURL is set, sending message")
+		fmt.Println("INFO: SlackURL is set: sending message")
 		postSlack(send_text)
 	} else {
-		fmt.Println("INFO: SlackURL is not set, no messages will be sent")
+		fmt.Println("INFO: SlackURL is not set: no messages will be sent")
 	}
 }
 
@@ -305,7 +293,7 @@ func main() {
 	fmt.Println("INFO: CPU Cores:", runtime.NumCPU())
 
 	if webserver {
-		go runCapture(state)
+		go runCapture(state, config)
 		fmt.Println("INFO: Running webserver mode: http://localhost:8080/logs")
 		http.Handle("/", http.FileServer(http.Dir("./src")))
 		http.HandleFunc("/logs", httpLogs)
@@ -314,6 +302,6 @@ func main() {
 		}
 	} else {
 		fmt.Println("INFO: Running console mode")
-		runCapture(state)
+		runCapture(state, config)
 	}
 }

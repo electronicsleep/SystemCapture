@@ -1,0 +1,5 @@
+slack_url: 
+slack_msg: "<@user>"
+commands:
+  - "/bin/ls -l"
+  - "/bin/df -i"
