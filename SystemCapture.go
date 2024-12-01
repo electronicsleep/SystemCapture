@@ -1,6 +1,6 @@
 /*
 // Author: https://github.com/electronicsleep
-// Purpose: Golang application to capture system info when CPU thresholds is reached
+// Purpose: Golang application to capture system info when CPU thresholds are reached
 // Released under the BSD license
 */
 
@@ -153,7 +153,7 @@ func runCapture(state stateStruct, config configStruct) {
 			checkError("ERROR: conversion issue load 1", err)
 			fmt.Println("INFO: Load: ", intLoad1, " ", intLoad5, " ", intLoad15)
 			if intLoad1 > threshold || intLoad5 > threshold || intLoad15 > threshold {
-				sendMessage("INFO: Load over threshold: Hostname: " + state.Hostname)
+				sendMessage("INFO: Load over threshold: Hostname: "+state.Hostname, config)
 				log.Println("INFO: Load over threshold: Running checks")
 				time.Sleep(3 * time.Second)
 
@@ -209,22 +209,17 @@ func runCapture(state stateStruct, config configStruct) {
 	}
 }
 
-func sendMessage(send_text string) {
-	var config configStruct
-	config.getConfig()
+func sendMessage(send_text string, config configStruct) {
 	if config.SlackURL != "" {
 		fmt.Println("INFO: SlackURL is set: sending message")
-		postSlack(send_text)
+		postSlack(send_text, config)
 	} else {
 		fmt.Println("INFO: SlackURL is not set: no messages will be sent")
 	}
 }
 
-func postSlack(message string) {
+func postSlack(message string, config configStruct) {
 	fmt.Println("INFO: postSlack:" + message)
-
-	var config configStruct
-	config.getConfig()
 	send_text := message + ": " + config.SlackMsg
 
 	var jsonData = []byte(`{
@@ -256,13 +251,13 @@ func main() {
 
 	flag.Parse()
 
+	var config configStruct
+	config.getConfig()
+
 	var state stateStruct
 	state.setState()
 	fmt.Println("INFO: Hostname: " + state.Hostname)
-	sendMessage("INFO: Starting SystemCapture on hostname: " + state.Hostname)
-
-	var config configStruct
-	config.getConfig()
+	sendMessage("INFO: Starting SystemCapture on hostname: "+state.Hostname, config)
 
 	verbose = *verboseFlag
 	webserver = *webserverFlag
