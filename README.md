@@ -10,7 +10,12 @@ Default will set threshold to number of CPU cores
 
 **Verbose Checks:** Regular Checks + vmstat, lsof, iostat
 
+``` Make
+make
+make test
 ```
+
+``` Go
 # Run
 go run SystemCapture.go
 

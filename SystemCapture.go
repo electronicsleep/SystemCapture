@@ -192,7 +192,7 @@ func runCapture(state stateStruct, config configStruct) {
 				}
 
 				fmt.Println("INFO: Config: User defined Commands")
-				fmt.Println(config)
+				fmt.Println(config.Commands)
 				for idx, cmd := range config.Commands {
 					line := fmt.Sprintf("User Command: %d: "+cmd, idx)
 					fmt.Println(line)
@@ -226,20 +226,32 @@ func postSlack(message string, config configStruct) {
                 "text": "` + send_text + `",
         }`)
 
-	request, error := http.NewRequest("POST", config.SlackURL, bytes.NewBuffer(jsonData))
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	if is_connected() {
+		request, error := http.NewRequest("POST", config.SlackURL, bytes.NewBuffer(jsonData))
+		request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	client := &http.Client{}
-	response, error := client.Do(request)
-	if error != nil {
-		panic(error)
+		client := &http.Client{}
+		response, error := client.Do(request)
+		if error != nil {
+			panic(error)
+		}
+		defer response.Body.Close()
+
+		fmt.Println("INFO: response Status:", response.Status)
+		fmt.Println("INFO: response Headers:", response.Header)
+		body, _ := ioutil.ReadAll(response.Body)
+		fmt.Println("INFO: response Body:", string(body))
+	} else {
+		fmt.Println("ERROR: Not connected to the net")
 	}
-	defer response.Body.Close()
+}
 
-	fmt.Println("INFO: response Status:", response.Status)
-	fmt.Println("INFO: response Headers:", response.Header)
-	body, _ := ioutil.ReadAll(response.Body)
-	fmt.Println("INFO: response Body:", string(body))
+func is_connected() (ok bool) {
+	_, err := http.Get("http://clients3.google.com/generate_204")
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func main() {
