@@ -6,9 +6,9 @@ Capture system details when thresholds are reached good for troubleshooting
 
 Default will set threshold to number of CPU cores
 
-**Regular Checks:** w, top, netstat -ta, ps -ef, ps, df
+**Standard Checks:** w, top, netstat -ta, ps -ef, ps, df
 
-**Verbose Checks:** Regular Checks + vmstat, lsof, iostat
+**Verbose Checks:** Standard Checks + vmstat, lsof, iostat
 
 ``` Make
 make
@@ -46,7 +46,6 @@ git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCaptu
 slack_url: https://hooks.slack.com/services/
 slack_msg: "<@user>"
 commands:
-  - "/bin/ls -l"
   - "/bin/df -i"
 ```
 

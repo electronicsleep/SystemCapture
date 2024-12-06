@@ -79,7 +79,7 @@ func captureCommand(tf string, cmd string) {
 	}
 	sCmd := string(cmdOut[:])
 	cmdU := strings.ToUpper(cmd)
-	logOutput(tf, cmdU+":", sCmd)
+	logOutput(tf, "CMD: "+cmdU+":", sCmd)
 }
 
 func logOutput(date string, cmd string, cmdOut string) {
@@ -211,7 +211,7 @@ func runCapture(state stateStruct, config configStruct) {
 
 func sendMessage(send_text string, config configStruct) {
 	if config.SlackURL != "" {
-		fmt.Println("INFO: SlackURL is set: sending message")
+		fmt.Println("SlackURL is set: sending message")
 		postSlack(send_text, config)
 	} else {
 		fmt.Println("INFO: SlackURL is not set: no messages will be sent")
