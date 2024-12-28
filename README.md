@@ -13,6 +13,7 @@ Default will set threshold to number of CPU cores
 ``` Make
 make
 make test
+make install
 ```
 
 ``` Go
@@ -48,10 +49,7 @@ slack_msg: "<@user>"
 commands:
   - "/bin/df -i"
 ```
-
-Update with your own commands to capture info, search for CMD:
-
-Ever want to capture system info during a spike? This is for you
+Ever want a simple tool to capture system info or alert during a CPU spike? This is for you
 
 Useful for keeping an eye on processes running using CPU (similar to SAR report)
 

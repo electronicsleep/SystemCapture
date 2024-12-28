@@ -10,7 +10,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -71,7 +71,7 @@ func (state *stateStruct) setState() *stateStruct {
 	return state
 }
 
-func captureCommand(tf string, cmd string) {
+func captureCommand(tf string, cmd string) bool {
 	cmdOut, cmdErr := exec.Command("bash", "-c", cmd).Output()
 	if cmdErr != nil {
 		fmt.Println("ERROR: cmd", cmdErr)
@@ -80,6 +80,7 @@ func captureCommand(tf string, cmd string) {
 	sCmd := string(cmdOut[:])
 	cmdU := strings.ToUpper(cmd)
 	logOutput(tf, "CMD: "+cmdU+":", sCmd)
+	return true
 }
 
 func logOutput(date string, cmd string, cmdOut string) {
@@ -94,7 +95,7 @@ func logOutput(date string, cmd string, cmdOut string) {
 }
 
 func httpLogs(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("./SystemCapture.log")
+	data, err := os.ReadFile("./SystemCapture.log")
 	if err != nil {
 		fmt.Println("ERROR: reading file")
 	}
@@ -219,11 +220,13 @@ func sendMessage(send_text string, config configStruct) {
 }
 
 func postSlack(message string, config configStruct) {
-	fmt.Println("INFO: postSlack:" + message)
-	send_text := message + ": " + config.SlackMsg
+	t := time.Now()
+	tf := t.Format("2006/01/02 15:04:05")
+	fmt.Println(tf + " INFO: postSlack:" + message)
+	send_text := tf + " " + message + ": " + config.SlackMsg
 
 	var jsonData = []byte(`{
-                "text": "` + send_text + `",
+		"text": "` + send_text + `",
         }`)
 
 	if is_connected() {
@@ -239,7 +242,7 @@ func postSlack(message string, config configStruct) {
 
 		fmt.Println("INFO: response Status:", response.Status)
 		fmt.Println("INFO: response Headers:", response.Header)
-		body, _ := ioutil.ReadAll(response.Body)
+		body, _ := io.ReadAll(response.Body)
 		fmt.Println("INFO: response Body:", string(body))
 	} else {
 		fmt.Println("ERROR: Not connected to the net")
