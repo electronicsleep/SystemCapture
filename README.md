@@ -12,6 +12,7 @@ Default will set threshold to number of CPU cores
 
 ``` Make
 make
+make check
 make test
 make install
 ```
@@ -33,7 +34,7 @@ go run SystemCapture.go -t 4 -w -v
 # Build for Linux
 GOOS=linux go build SystemCapture.go
 
-# Docker env Alpine
+# Docker env
 bash docker-run.sh
 
 # Run background
@@ -42,8 +43,10 @@ nohup go run SystemCapture.go
 # Example
 git clone https://github.com/electronicsleep/SystemCapture.git && cd SystemCapture && go run SystemCapture.go
 
-# Notifications and custom commands
-# Config: config.yaml
+```
+###  Notifications and custom commands
+#### Config: config.yaml
+```
 slack_url: https://hooks.slack.com/services/
 slack_msg: "<@user>"
 commands:

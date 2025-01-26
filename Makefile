@@ -1,5 +1,6 @@
 build:
-	go fmt .; go build -o sc
+	go fmt .
+	go build -o sc
 
 check:
 	go fmt .

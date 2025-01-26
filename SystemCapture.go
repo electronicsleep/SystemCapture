@@ -1,8 +1,6 @@
-/*
 // Author: https://github.com/electronicsleep
 // Purpose: Golang application to capture system info when CPU thresholds are reached
 // Released under the BSD license
-*/
 
 package main
 

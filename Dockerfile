@@ -1,6 +1,6 @@
-FROM alpine:latest
+FROM ubuntu:latest
 
-MAINTAINER Chris Robertson https://github.com/electronicsleep
+LABEL org.opencontainers.image.authors="https://github.com/electronicsleep"
 
 RUN mkdir -p /usr/src/app
 
