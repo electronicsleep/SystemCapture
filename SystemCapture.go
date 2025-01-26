@@ -190,12 +190,13 @@ func runCapture(state stateStruct, config configStruct) {
 					captureCommand(tf, "iostat")
 				}
 
-				fmt.Println("INFO: Config: User defined Commands")
-				fmt.Println(config.Commands)
-				for idx, cmd := range config.Commands {
-					line := fmt.Sprintf("User Command: %d: "+cmd, idx)
-					fmt.Println(line)
-					captureCommand(tf, cmd)
+				if len(config.Commands) != 0 {
+					fmt.Println("INFO: Config: User defined Commands:", config.Commands)
+					for idx, cmd := range config.Commands {
+						line := fmt.Sprintf("User Command: %d: "+cmd, idx)
+						fmt.Println(line)
+						captureCommand(tf, cmd)
+					}
 				}
 
 			} else {

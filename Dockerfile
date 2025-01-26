@@ -1,11 +1,10 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.authors="https://github.com/electronicsleep"
 
 RUN mkdir -p /usr/src/app
 
-# For verbose commands
-RUN apk update && apk upgrade && apk add sysstat net-tools lsof procps
+RUN apt-get update && apt-get upgrade -y && apt-get install -y net-tools
 
 ADD SystemCapture /usr/src/app
 
